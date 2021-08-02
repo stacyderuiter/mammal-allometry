@@ -1,0 +1,27 @@
+---
+title: "Mammal Allometry - Supplemental Information"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Files
+
+All datasets used in the analysis, as well as a cleaned-up Excel file containing all data, are available on [the manuscript's github repository](https://github.com/stacyderuiter/mammal-allometry) in the data directory.
+
+*Note: upon publication, citation info will be provided here too.*
+
+## Supplemental Information
+
+Code and results of all model fitting are available in the repository. The .Rmd files in the main directory are the source code; you can also view compiled versions at the links below.
+
+*Note: our plan is to update to a version with just one file/page with sections for each of the different response variables.*
+
+- [Metabolic rate models](all-models-bmr.html)
+- [Breathing frequency models](all-models-fr.html)
+- [Heart rate models](all-models-hr.html)
+- [Stroke volume models](all-models-sv.html)
+- [Tidal volume models](all-models-vt.html)
+- Model predictions: [Cardiac output and total ventilation](more-predictions.html)
