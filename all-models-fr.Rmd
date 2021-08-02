@@ -1,0 +1,385 @@
+---
+title: "Mammal Breathing Frequency"
+author: "Fahlman & DeRuiter Labs"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+require(tidyverse) # for data wrangling
+require(mosaic) # for ggformula graphics
+require(plotly) # for interactive graphs
+# require(evomap) # for PGLS ancova/CI/PIs
+require(ape) # for trees
+require(mice) # for pooling estimated from fitted pgls models
+require(broom.mixed) # for pulling results out of gls fitted model objects
+require(carEx) # for ANOVA for pgls
+# to install evomap run:
+# remotes::install_github('JeroenSmaers/evomap')
+# require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons)
+require(dplyr)
+require(car)  #  needed for Anova(), avPlots, vif functions
+require(MuMIn)  #  needed for dredge function, pgls utilities?
+require(sjPlot) # for tables of model summary info
+require(pander) # for table of Anova() results
+require(nlme) # for gls()
+require(MASS) #for vcova
+require(carEx)
+# require(multcomp)
+# require(nlstools)
+require(ggeffects) # for plotting marginal model predictions
+require(glmmTMB) # for fitting RE models. can use lme4 also
+
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+theme_set(theme_minimal(base_size = 14))
+my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
+
+source('utils/gls-utils.R')
+source('utils/Anova.mira.R')
+```
+
+## Data
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, data-in}
+mammal_fr <- read.csv("data/fr.csv") 
+```
+
+### Notes
+
+- `log10fr` is the base-10 logarithm of breathing frequency (units not known?)
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, data-rename}
+mammal_fr <- mammal_fr %>%
+  rename(source = Source,
+         order = order.corrected,
+        # n.animals = Number.of.Animals,
+         mass.kg = body.mass..kg.) %>%
+  mutate(order = str_to_title(order),
+         genus = str_to_title(genus),
+         animal = paste(genus, species),
+         above.10kg = ifelse(mass.kg >= 10, 'Larger', 'Smaller'))
+```
+
+Keep only variables we will be using. And `factor()` "chr" variables.
+
+```{r, data-select}
+mammal_fr <- mammal_fr %>%
+  dplyr::select(order,
+                genus,
+                species, 
+                common.name,
+                mass.kg,
+                log10.body.mass,
+                log10fr,
+                habitat,
+                source,
+                animal,
+                above.10kg
+         ) %>%
+  mutate(across(where(is.character), factor)) %>%
+  arrange(order, genus, species)
+```
+
+### Viz
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, create-plot-no-display}
+my_scatter_plot <- gf_point(log10fr ~ log10.body.mass | habitat,
+         color = ~order,
+         # size = ~parse_number(n_animals),
+         data = mammal_fr,
+         alpha = 0.5) %>%
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) %>%
+  gf_theme(scale_color_viridis_d('Order')) %>%
+  gf_labs(x = 'Log10(Mass (kg))',
+          y = 'Log10(fR (breaths/min))') 
+```
+
+```{r display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r disply-interactive, warning = FALSE, message = FALSE}
+plotly::ggplotly(my_scatter_plot) %>%
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+Notes: If we wanted to use for web or publication, we would refine. We can edit what info is shown when you hover over a data point, change color scheme, legend, etc.
+
+## GLS
+
+Will not account for phylogeny at all in the model structure. Predictors: body mass interacting with habitat. Weight by number of individuals (if have data later, don't have it now)?
+
+```{r, fit-lm}
+lm_model <- lm(log10fr ~ log10.body.mass * habitat,
+                 data = mammal_fr)
+summary(lm_model)
+tab_model(lm_model) 
+lm_anova_results <- car::Anova(lm_model)
+pander(lm_anova_results)
+```
+
+<!-- For more on formatting the fitted model table see: <https://strengejacke.github.io/sjPlot/articles/tab_model_estimates.html> -->
+
+### Model Assessment
+
+```{r, assess-lm}
+lm_preds <- predict(lm_model, se.fit = TRUE)
+
+mammal_fr <- mammal_fr  %>% mutate(lm_resids = resid(lm_model),
+         lm_fitted = lm_preds$fit,
+         lm_fit_lo = lm_preds$fit + 1.96*lm_preds$se.fit,
+         lm_fit_hi = lm_preds$fit - 1.96*lm_preds$se.fit)
+gf_point(lm_resids ~ lm_fitted, data = mammal_fr)
+s245::gf_acf(~lm_model)
+gf_dhistogram(~lm_resids, data = mammal_fr,
+              bins = 20) %>%
+  gf_fitdistr()
+```
+
+
+### Model Predictions
+
+Any predictors *not shown* in a plot are held constant at their mean or most common value.
+
+```{r, predict-lm}
+gf_line(lm_fitted ~ log10.body.mass,
+         color = ~habitat,
+         data = mammal_fr) %>%
+  gf_ribbon(lm_fit_lo + lm_fit_hi ~ log10.body.mass,
+            color = ~habitat, fill = ~habitat) %>% 
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_theme(scale_fill_manual(values = my_colors))
+
+gf_point(log10fr ~ lm_fitted, data = mammal_fr,
+         alpha = 0.1) %>%
+  gf_labs(y = 'Observed log10(fR)',
+          x = 'Model-predicted log10(fR)',
+          title = 'Linear Regresssion (no phylogeny)') %>%
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family/genus/species, expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
+
+```{r, fit-re}
+re_model <- glmmTMB(log10fr ~ log10.body.mass * habitat + (1 | order/genus/species),
+                 data = mammal_fr)
+summary(re_model)
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+pander(re_anova_results)
+```
+
+### Model Assessment
+
+```{r, assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_fr <- mammal_fr %>%
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+
+# save fitted model and data
+saveRDS(mammal_fr, 'fitted-models/fr-data.RDS')
+saveRDS(re_model, 'fitted-models/fr-re-model.RDS')
+
+
+gf_point(re_resids ~ re_ind_fitted, data = mammal_fr)
+acf(resid(re_model))
+#gf_acf(~re_model)
+gf_dhistogram(~re_resids, data = mammal_fr) %>%
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+```{r, predict-re}
+gf_line(re_ave_fitted ~ log10.body.mass,
+         color = ~habitat,
+         data = mammal_fr) %>%
+  gf_ribbon(re_ave_lo + re_ave_hi ~ log10.body.mass,
+            color = ~habitat, fill = ~habitat) %>% 
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_theme(scale_fill_manual(values = my_colors))
+
+gf_point(log10fr ~ re_ind_fitted, data = mammal_fr,
+         alpha = 0.1) %>%
+  gf_labs(y = 'Observed log10(fr)',
+          x = 'Model-predicted, Species-specific log10(fr)',
+          title = 'Mixed-effects Model (RE of Order/Genus/Species)') %>%
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+The graph above is a bit "cheating" as we have a random effect of species, but there are only 1-2 measurements for most of the species (nearly guaranteeing that our estimates will be nearly perfect).  What if we also check out the predictions accounting for the modeled effects of Order and Genus, but predicting for the "average" species in each Genus?
+
+```{r}
+no_species <- mammal_fr %>%
+  mutate(species = NA)
+re_genus_level_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = NULL,
+                    newdata = no_species)
+
+gf_point(log10fr ~ re_genus_level_preds$fit, data = mammal_fr,
+         alpha = 0.1) %>%
+  gf_labs(y = 'Observed log10(fH)',
+          x = 'Model-predicted, Genus-specific log10(fr)',
+          title = 'Mixed-effects Model (RE of Order/Genus/Species)') %>%
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+## PGLS
+### Read in Tree Data
+
+```{r, trees-in, message = FALSE}
+#Read in the trees from Upham et al
+#Upham et al provide four sets of 10000 trees
+# ??? There are 101 files of trees in the directory?
+# original code sampled 4x10 trees from a set of 100
+# here I am just using all 101 that are there, is that oK?
+
+tree_path <- paste("data/upham-trees/Completed_5911sp_topoCons_FBDasZhouEtAl")
+tree_files <- list.files(tree_path)
+
+all_trees <- list()
+
+for (i in 1:length(tree_files)){
+  all_trees[[i]] <- read.tree(paste0(tree_path, '/',
+                                     tree_files[i]))
+  if (i == 1){
+    treeset <- all_trees[[i]]
+  }else{
+    treeset <- c(treeset, all_trees[[i]])
+  }
+}
+
+all_tip_labels <- purrr::map(treeset, "tip.label")
+all_tip_labels <- purrr::map(all_tip_labels,
+                             function(x) 
+                               stringr::str_replace_all(x, pattern = '_',
+                                                      replacement = ' '))
+
+# get list of species that are in ALL the trees
+for (t in 1:length(all_tip_labels)){
+  if (t == 1){
+    tip_labs <- all_tip_labels[[t]]
+  }else{
+    tip_labs <- intersect(tip_labs, all_tip_labels[[t]])
+  }
+}
+
+
+                            
+# keep only the species in mammal_bmr that are in all the trees
+# on 4/14 this removes 1 species.
+pgls_data <- mammal_fr %>%
+  filter(animal %in% tip_labs) %>%
+  droplevels()
+
+
+taxonomy <- read_csv('data/upham-trees/taxonomy_mamPhy_5911species.csv')
+
+```
+
+Fit models, one model for every tree in our list.
+
+```{r, fit-pgls}
+pgls_models <- list()
+
+for (t in c(1:length(treeset))){
+  # make sure there is only one row of data per species (seems dubious??)
+  pgls_rep_data <- pgls_data %>% 
+    group_by(animal) %>%
+    sample_n(1) %>%
+    ungroup
+  
+  
+  #Reduce the tree to only include those species in the data set
+  refit_tree <- treeset[[t]]
+  refit_tree$tip.label <- str_replace_all(refit_tree$tip.label, '_', ' ')
+  refit_tree <- drop.tip(refit_tree, 
+                         setdiff(refit_tree$tip.label, 
+                                 levels(pgls_rep_data %>% pull(animal))))
+  
+  #Order the data set so that it is in the same order as the tip labels of the tree
+  pgls_rep_data <- left_join(data.frame(tree.tip.label = refit_tree$tip.label),
+                             pgls_rep_data,
+                             by = c('tree.tip.label' = 'animal'),
+                             keep = TRUE)
+  
+  # fit the model
+ pgls_models[[t]] <- tryCatch({
+    fittd <- gls(log10fr ~ log10.body.mass * habitat,
+                   correlation = corPagel(value = 0.8, 
+                                          phy = refit_tree, 
+                                          fixed = FALSE, 
+                                          form = ~animal),
+                   data = pgls_rep_data)
+    },
+  error = function(cond){
+    message(paste('PGLS fit failed for tree', t))
+    return(NULL)
+  }
+  )
+}
+pgls_models <- pgls_models[!sapply(pgls_models, is.null)]
+```
+
+Note: we tried to fit `r length(treeset)` PGLS models (each with a different tree); of these, model fitting failed for `r length(treeset) - length(pgls_models)`.
+
+Combine the many PGLS model runs together into one summary combined model according to Rubin's rule.
+
+```{r, test-pgls}
+# as.mira takes the list of models and create an object to be used by the mice package
+pgls_mira <- as.mira(pgls_models)  
+# # pool summarise the models using Rubin's rule corrected for small samples
+#summary(pgls_mira)
+pooled_pgls   <- pool(pgls_mira)
+pooled_pgls_summ <- summary(pooled_pgls, type = 'all', conf.int = TRUE)
+#pooled_pgls_summ <- summary(pool(pgls_mira, type = 'all', conf.int = TRUE))
+
+pander(pooled_pgls_summ %>% dplyr::select(term, estimate, std.error, `2.5 %`, `97.5 %`, lambda, fmi))
+
+pgls_anova <- Anova(pgls_mira)
+pander(pgls_anova)
+```
+
+Alternative approach: using `MuMIn` to do model averaging. This will not necessarily weight all of the models/trees equally.
+
+```{r, pgls-mumin}
+pgls_avg <- model.avg(pgls_models, 
+                      rank = function(x) 1)
+```
+
+
+
+```{r, get-lambda}
+lambda <- mean(unlist(purrr::map(pgls_models, function(x) x$modelStruct$corStruct)))
+lambda
+```
+

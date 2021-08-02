@@ -1,0 +1,102 @@
+genus,species,common name,body mass (kg),log10 body mass,fr,units,frr,log10fr,habitat,usable,order corrected,Source,diet,speciesname
+Addax,nasomaculatus,addax,92,1.96378783,26,br/min,26,1.41497335,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Addax nasomaculatus
+Ailurus,fulgens,red panda,5.2,0.71600334,32,br/min,32,1.50514998,land,yes,carnivora,"Mortola and Lanthier, 2005",h,Ailurus fulgens
+Alces,alces,moose,425,2.62838893,17,br/min,17,1.23044892,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Alces alces
+Antilope,cervicapra,blackbuck,35,1.54406804,31,br/min,31,1.49136169,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Antilope cervicapra
+Aonyx,cinerea,asian small otter,3,0.47712125,27,br/min,27,1.43136376,aquatic,yes,carnivora,"Mortola and Limoges, 2006",,Aonyx cinerea
+Aonyx,capensis,african clawless otter,11,1.04139269,16,br/min,16,1.20411998,aquatic,yes,carnivora,"Mortola and Limoges, 2006",,Aonyx capensis
+Arctocephalus,pusillus,south-african fur seal,190,2.2787536,1.3,br/min,1.3,0.11394335,aquatic,yes,carnivora,"Mortola and Limoges, 2006",c,Arctocephalus pusillus
+Balaenoptera,physalus,fin whale,41671.4286,4.61983839,0.75714286,br/min,0.75714286,-0.1208222,aquatic,yes,artiodactyla,"Mortola and Limoges, 2006; Fahlman, Moore, and Garcia-Parrage, 2017; Lafortuna et al., 2003",c,Balaenoptera physalus
+Balaenoptera,acutorostrata,minke whale,3842.5,3.58461388,0.83375,br/min,0.83375,-0.0789642,aquatic,yes,artiodactyla,"Fahlman, Moore, and Garcia-Parrage, 2017; Folkow, 1992; Blix and Folkow 1995",c,Balaenoptera acutorostrata
+Bison,bison,american bison,576,2.76042248,23,br/min,23,1.36172784,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Bison bison
+Bos,taurus,cow,544,2.7355989,28,br/min,28,1.44715803,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Bos taurus
+Bos,grunniens,yak,395,2.5965971,30,br/min,30,1.47712125,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Bos grunniens
+Bubalus,arnee,wild water buffalo,810,2.90848502,13,br/min,13,1.11394335,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Bubalus arnee
+Camelus,bactrianus,two-humped camel,515,2.71180723,7,br/min,7,0.84509804,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Camelus bactrianus
+Camelus,dromedarius,camel,550,2.74036269,13.5,br/min,13.5,1.13033377,land,yes,artiodactyla,Hugh Jones 1978,,Camelus dromedarius
+Canis,lupus,domestic dog,21.4,1.33041377,21,br/min,21,1.32221929,land,yes,carnivora,"Mortola and Lanthier, 2005; Crosfill and Widdicombe, 1961",o,Canis lupus
+Capra,hircus,domestic goat,22,1.34242268,37,br/min,37,1.56820172,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Capra hircus
+Castor,canadensis,beaver,22,1.34242268,28.3333333,br/min,28.3333333,1.45229767,aquatic,yes,rodentia,"Mortola and Lanthier, 2005; Mortola and Limoges, 2006",h,Castor canadensis
+Cavia,porcellus,guinea pig,0.6933333,-0.1590579,59.6667,br/min,59.6667,1.77573202,land,yes,rodentia,"Mortola and Lanthier, 2005; Crosfill and Widdicombe, 1961",,Cavia porcellus
+Ceratotherium,simum,rhino,3091,3.49009901,11,br/min,11,1.04139269,land,yes,perissodactyla,"Mortola and Lanthier, 2005",,Ceratotherium simum
+Cervus,elaphus,red deer,192.5,2.28443073,26.5,br/min,26.5,1.42324587,land,yes,artiodactyla,"Mortola and Lanthier, 2005; Hugh Jones 1978",,Cervus elaphus
+Choeropsis,liberiensis,pygmy hippo,217,2.33645973,3,br/min,3,0.47712125,land,yes,artiodactyla,"Mortola and Limoges, 2006",,Choeropsis liberiensis
+Colobus,guereza,colobus,12,1.07918125,15,br/min,15,1.17609126,land,yes,primates,"Mortola and Lanthier, 2005",,Colobus guereza
+Connochaetes,taurinus,gnu,177,2.24797327,19,br/min,19,1.2787536,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Connochaetes taurinus
+Cystophora,cristata,hooded seal,72,1.8573325,6.1,br/min,6.1,0.78532984,aquatic,yes,carnivora,"Mortola and Limoges, 2006; Pasche 1976",c,Cystophora cristata
+Dasypus,novemcinctus,long-nosed armadillo,2.3,0.36172784,45,br/min,45,1.65321251,land,yes,cingulata,"Mortola and Lanthier, 2005",,Dasypus novemcinctus
+Delphinapterus,leucas,beluga whale,766.909091,2.88474389,2.12727273,br/min,2.12727273,0.32782317,aquatic,yes,artiodactyla,"Mortola and Limoges, 2006; Fahlmen et al., 2019; Bickett and Tift, 2019",c,Delphinapterus leucas
+Dugong,dugon,dugon,360,2.5563025,0.9,br/min,0.9,-0.0457575,aquatic,yes,sirenia,"Mortola and Limoges, 2006; Hodgson, personal communication of Mortola",h,Dugong dugon
+Elaphurus,davidianus,pare david's deer,171,2.23299611,25,br/min,25,1.39794001,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Elaphurus davidianus
+Elephas,maximus,asian elephant,4550,3.6580114,7,br/min,7,0.84509804,land,yes,proboscidea,"Mortola and Lanthier, 2005",h,Elephas maximus
+Equus,caballus,horse,620,2.79239169,12,br/min,12,1.07918125,land,yes,perissodactyla,"Mortola and Lanthier, 2005",h,Equus caballus
+Equus,quagga,burchell's zebra,278,2.4440448,15,br/min,15,1.17609126,land,yes,perissodactyla,"Mortola and Lanthier, 2005",h,Equus quagga
+Equus,africanus,donkey,205,2.31175386,23,br/min,23,1.36172784,land,yes,perissodactyla,"Mortola and Lanthier, 2005",h,Equus africanus
+Equus,hemionus,onager,235,2.37106786,23,br/min,23,1.36172784,land,yes,perissodactyla,"Mortola and Lanthier, 2005",,Equus hemionus
+Erethizon,dorsatum,porcupine,8.9,0.94939001,50,br/min,50,1.69897,land,yes,rodentia,"Mortola and Lanthier, 2005",,Erethizon dorsatum
+Eschrichtius,robustus,gray whale,12988.7,4.11356569,0.719125,br/min,0.719125,-0.1431956,aquatic,yes,artiodactyla,"Sumich, 1982; Wahrenbrock, 1974",c,Eschrichtius robustus
+Felis,catus,domestic cat,3.96,0.59769519,27.6,br/min,27.6,1.44090908,land,yes,carnivora,"Mortola and Lanthier, 2005; Crosfill and Widdicombe, 1961",o,Felis catus
+Genetta,genetta,genet,2.3,0.36172784,28,br/min,28,1.44715803,land,yes,carnivora,"Mortola and Lanthier, 2005",,Genetta genetta
+Giraffa,camelopardalis,giraffe,808,2.90741136,7.66666667,br/min,7.66666667,0.88460658,land,yes,artiodactyla,"Hugh Jones 1978; Mortola and Lanthier, 2005",h,Giraffa camelopardalis
+Globicephala,macrorhynchus,pilot whale,895,2.95182304,1.214,br/min,1.214,0.08421869,aquatic,yes,artiodactyla,"Bickett and Tift, 2019; Fahlman unpublished, Mortola and Limoges, 2006; Butterworth, 2004",c,Globicephala macrorhynchus
+Gorilla,gorilla,gorilla,217,2.33645973,17,br/min,17,1.23044892,land,yes,primates,"Mortola and Lanthier, 2005",h,Gorilla gorilla
+Halichoerus,grypus,grey seal,200,2.30103,3.3,br/min,3.3,0.51851394,aquatic,yes,carnivora,"Mortola and Limoges, 2006",c,Halichoerus grypus
+Hippopotamus,amphibius,hippo,1822,3.26054837,3.6,br/min,3.6,0.5563025,aquatic,yes,artiodactyla,"Mortola and Lanthier, 2005; Mortola and Limoges, 2006",,Hippopotamus amphibius
+Homo,sapiens,human,70,1.84509804,15.8,br/min,15.8,1.19865709,land,yes,primates,"Hugh Jones 1978; Crosfill and Widdicombe, 1961",o,Homo sapiens
+Hydrochoerus,hydrochaeris,capybara,49.25,1.69240623,27.5,br/min,27.5,1.43933269,land,yes,rodentia,"Mortola and Lanthier, 2005; Mortola and Limoges, 2006",,Hydrochoerus hydrochaeris
+Hyperoodon,ampullatus,northern bottlenose whale,6650,3.82282165,1.1,br/min,1.1,0.04139269,aquatic,yes,artiodactyla,"Mortola and Limoges, 2006; Andersen, 1966",c,Hyperoodon ampullatus
+Lama,glama,llama,128.333333,2.10833947,18,br/min,18,1.25527251,land,yes,artiodactyla,"Hugh Jones 1978; Mortola and Lanthier, 2005",,Lama glama
+Leptonychotes,weddellii,weddell seal,373.875,2.57272643,4.75,br/min,4.75,0.67669361,aquatic,yes,carnivora,"Falke et al., 2008; Mortola and Limoges, 2006; Kooyman, 1971",c,Leptonychotes weddellii
+Lontra,canadensis,river otter,11,1.04139269,17,br/min,17,1.23044892,aquatic,yes,carnivora,"Mortola and Limoges, 2006",c,Lontra canadensis
+Loxodonta,africana,african elephant,2611,3.41680687,5,br/min,5,0.69897,land,yes,proboscidea,"Mortola and Lanthier, 2005",h,Loxodonta africana
+Lutra,maculicollis,spotted-necked otter,12,1.07918125,22,br/min,22,1.34242268,aquatic,yes,carnivora,"Mortola and Lanthier, 2005",c,Lutra maculicollis
+Mandrillus,sphinx,mandrill,26,1.41497335,17,br/min,17,1.23044892,land,yes,primates,"Mortola and Lanthier, 2005",,Mandrillus sphinx
+Marmota,monax,woodchuck,3.8,0.5797836,67,br/min,67,1.8260748,land,yes,rodentia,"Mortola and Lanthier, 2005",,Marmota monax
+Megaptera,novaeangliae,Humpback whale,27500,4.43933269,0.5,br/min,0.5,-0.30103,aquatic,yes,artiodactyla,"Horton et al., 2019",c,Megaptera novaeangliae
+Meriones,unguiculatus,jird,0.05,-1.30103,146,br/min,146,2.16435286,land,yes,rodentia,"Mortola and Lanthier, 2005",,Meriones unguiculatus
+Mesocricetus,auratus,golden hamster,0.1,-1,56,br/min,56,1.74818803,land,yes,rodentia,"Mortola and Lanthier, 2005",,Mesocricetus auratus
+Mirounga,angustirostris,northern elephant seal,206,2.31386722,2.3,br/min,2.3,0.36172784,aquatic,yes,carnivora,"Mortola and Limoges, 2006; Andrews et al., 2000; Le Bouef et al., 2000",c,Mirounga angustirostris
+Muntiacus,reevesi,muntjac,14,1.14612804,26,br/min,26,1.41497335,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Muntiacus reevesi
+Mus,musculus,house mouse,0.030889,-1.5101962,140.111,br/min,140.111,2.14647223,land,yes,rodentia,"Mortola and Lanthier, 2005; Crosfill and Widdicombe, 1961",o,Mus musculus
+Mustela,putorius,domestic ferret,1.2,0.07918125,37,br/min,37,1.56820172,land,yes,carnivora,"Mortola and Lanthier, 2005",,Mustela putorius
+Mustela,lutreola,european mink,0.5,-0.30103,48,br/min,48,1.68124124,land,yes,carnivora,"Mortola and Limoges, 2006; Tumanov and Sorina, 1999",,Mustela lutreola
+Nasua,nasua,coati,4.9,0.69019608,28,br/min,28,1.44715803,land,yes,carnivora,"Mortola and Lanthier, 2005",,Nasua nasua
+Notomys,alexis,hopping mouse,0.03,-1.5228787,169,br/min,169,2.2278867,land,yes,rodentia,"Mortola and Lanthier, 2005",,Notomys alexis
+Odobenus,rosmarus,walrus,963.679,2.9839324,3.82308,br/min,3.82308,0.58241339,aquatic,yes,carnivora,"Bertelsen, Acquarone, and Born 2006",c,Odobenus rosmarus
+Odocoileus,hemionus,mule deer,72,1.8573325,11,br/min,11,1.04139269,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Odocoileus hemionus
+Okapia,johnstoni,okapi,238,2.37657696,10,br/min,10,1,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Okapia johnstoni
+Orcinus,orca,killer whale/orca,3357.87,3.52606388,1.49444,br/min,1.49444,0.17447848,aquatic,yes,artiodactyla,"Mortola and Limoges, 2006; Bickett and Tift, 2019; Fahlman unpublished, Kriete 1995, Williams and Noren, 2009",c,Orcinus orca
+Oreamnos,americanus,mountain goat,88,1.94448267,58,br/min,58,1.76342799,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Oreamnos americanus
+Oryctolagus,cuniculus,european rabbit,2.4,0.38021124,39,br/min,39,1.59106461,land,yes,lagomorpha,"Crosfill and Widdicombe, 1961",,Oryctolagus cuniculus
+Oryx,dammah,scimitar oryx,200,2.30103,21,br/min,21,1.32221929,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Oryx dammah
+Otaria,bryonia,Southern/Patagonia sea lion,151,2.17897695,4.36,br/min,4.36,0.63948649,aquatic,yes,carnivora,"Fahlman and Madigan, Frontiers, 2016",c,Otaria bryonia
+Ovibos,moschatus,muskox,265,2.42324587,53,br/min,53,1.72427587,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Ovibos moschatus
+Ovis,canadensis,bighorn sheep,98,1.99122608,33,br/min,33,1.51851394,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Ovis canadensis
+Ovis,dalli,dall's sheep,66,1.81954394,36,br/min,36,1.5563025,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Ovis dalli
+Ovis,aries,domestic sheep,50,1.69897,54,br/min,54,1.73239376,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Ovis aries
+Pagophilus,groenlandicus,harp seal,70,1.84509804,12,br/min,12,1.07918125,aquatic,yes,carnivora,"Mortola and Limoges, 2006",c,Pagophilus groenlandicus
+Panthera,onca,jaguar,63,1.79934055,9,br/min,9,0.95424251,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Panthera onca
+Panthera,tigris,siberian tiger,125,2.09691001,15,br/min,15,1.17609126,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Panthera tigris
+Panthera,leo,lion,145,2.161368,17,br/min,17,1.23044892,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Panthera leo
+Panthera,uncia,snow leopard,37,1.56820172,13,br/min,13,1.11394335,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Panthera uncia
+Peromyscus,maniculatus,deer mouse,0.02,-1.69897,181,br/min,181,2.25767857,land,yes,rodentia,"Mortola and Lanthier, 2005",o,Peromyscus maniculatus
+Phoca,vitulina,harbor seal,77,1.88649073,6,br/min,6,0.77815125,aquatic,yes,carnivora,"Mortola and Limoges, 2006",c,Phoca vitulina
+Phocoena,phocoena,harbor porpoise,52,1.71600334,5.8,br/min,5.8,0.76342799,aquatic,yes,artiodactyla,"Elmegaard, McDonald, and Madsen, 2019; Mortola and Limoges, 2006; Andersen, 1966",c,Phocoena phocoena
+Potos,flavus,kinkajou,3.1,0.49136169,21,br/min,21,1.32221929,land,yes,carnivora,"Mortola and Lanthier, 2005",,Potos flavus
+Pseudorca,crassidens,false killer whale,475.4,2.67705918,3.66,br/min,3.66,0.56348109,aquatic,yes,artiodactyla,"Fahlman unpublished; Fahlman Fronteris, 2020",c,Pseudorca crassidens
+Pteropus,dasymallus,flying fox/ryukyu,0.4,-0.39794,56,br/min,56,1.74818803,land,yes,chiroptera,"Mortola and Lanthier, 2005",,Pteropus dasymallus
+Puma,concolor,puma,77,1.88649073,38,br/min,38,1.5797836,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Puma concolor
+Rangifer,tarandus,caribou,92,1.96378783,40,br/min,40,1.60205999,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Rangifer tarandus
+Rattus,norvegicus,rat,0.285714,-0.5440685,112.714,br/min,112.714,2.05197786,land,yes,rodentia,"Mortola and Lanthier, 2005; Crosfill and Widdicombe, 1961",o,Rattus norvegicus
+Sus,scrofa,pig,302,2.48000694,39,br/min,39,1.59106461,land,yes,artiodactyla,"Mortola and Lanthier, 2005",o,Sus scrofa
+Tragelaphus,oryx,common eland,580,2.76342799,17,br/min,17,1.23044892,land,yes,artiodactyla,"Mortola and Lanthier, 2005",h,Tragelaphus oryx
+Trichechus,inunguis,amazonian manatee,89,1.94939001,0.5,br/min,0.5,-0.30103,aquatic,yes,sirenia,"Mortola and Limoges, 2006; Gallivan 1980, Gallivan et al., 1980",h,Trichechus inunguis
+Trichechus,manatus,manatee,275,2.43933269,0.7,br/min,0.7,-0.154902,aquatic,yes,sirenia,"Mortola and Limoges, 2006; Andersen, 1966; Scholander and Irving 1941 (3)",h,Trichechus manatus
+Tursiops,truncatus,bottlenose dolphins,195.294,2.2906889,3.90769,br/min,3.90769,0.5919201,aquatic,yes,artiodactyla,"Fahlman JEB 2015; Fahlman unpublished, Mortola and Limoges, 2006",c,Tursiops truncatus
+Ursus,thibetanus,tibetan bear/asian black bear,85,1.92941893,36,br/min,36,1.5563025,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Ursus thibetanus
+Ursus,arctos,brown grizzly bear,274,2.43775056,15,br/min,15,1.17609126,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Ursus arctos
+Ursus,maritimus,polar bear,432.5,2.63598611,16,br/min,16,1.20411998,aquatic,yes,carnivora,"Mortola and Lanthier, 2005; Mortola and Limoges, 2006",c,Ursus maritimus
+Vicugna,pacos,alpaca,68,1.83250891,15,br/min,15,1.17609126,land,yes,artiodactyla,"Mortola and Lanthier, 2005",,Vicugna pacos
+Viverra,civettina,civet,2,0.30103,36,br/min,36,1.5563025,land,yes,carnivora,"Mortola and Lanthier, 2005",,Viverra civettina
+Vulpes,lagopus,arctic fox,3.8,0.5797836,63,br/min,63,1.79934055,land,yes,carnivora,"Mortola and Lanthier, 2005",c,Vulpes lagopus
+Zalophus,californianus,California Sea Lions,83.2222,1.92023919,6.4,br/min,6.4,0.80617997,aquatic,yes,carnivora,McDonal JEB-2014; Fahlman et al Aquat Mam,c,Zalophus californianus

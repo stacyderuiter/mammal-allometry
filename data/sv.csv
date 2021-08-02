@@ -1,0 +1,30 @@
+genus,species,common name,body mass (kg),log10 body mass,sv,units,svml,log10sv,habitat,usable,order corrected,Source,diet
+Halichoerus,grypus,grey seal,39,1.59106461,59.85,ml,59.85,1.77706415,aquatic,yes,carnivora,"Thornton et al., 2005; Blix et al., 1976",c
+Leptonychotes,weddellii,weddell seal,415,2.6180481,826.21,ml,826.21,2.91709045,aquatic,yes,carnivora,"Thornton et al., 2005; Zapol et al., 1979",c
+Phoca,vitulina,harbor seal,37.8285714,1.57781994,87.5142857,ml,87.5142857,1.94207895,aquatic,yes,carnivora,"Thornton et al., 2005; Sinnett et al., 1978; Blix et al., 1983; Murdaugh et al., 1966; Seymour and Blaylock, 2000; Ponganis J Comp Physiol B 1990",c
+Eschrichtius,robustus,gray whale,4500,3.65321251,7150,ml,7150,3.85430604,aquatic,yes,artiodactyla,Smith and Wahrenbrock 1974,c
+Tursiops,truncatus,dolphin,93.1,1.96894968,55.9,ml,55.9,1.74741181,aquatic,yes,artiodactyla,"Seymour and Blaylock, 2000",c
+Bos,taurus,cow,464.5,2.66698572,659.25,ml,659.25,2.81905014,land,yes,artiodactyla,"Jones et al., 1989; Seymour and Blaylock, 2000",h
+Camelus,dromedarius,camel,369,2.56702637,422,ml,422,2.62531245,land,yes,artiodactyla,"Seymour and Blaylock, 2000",h
+Capra,hircus,goat,31.2,1.49415459,50.2,ml,50.2,1.70070372,land,yes,artiodactyla,"Seymour and Blaylock, 2000",h
+Giraffa,camelopardalis,giraffe,512.333,2.70955233,338.222,ml,338.222,2.52920185,land,yes,artiodactyla,"Seymour and Blaylock, 2000; Smerup et al., 2016",h
+Lama,glama,llama,108,2.03342376,184,ml,184,2.26481782,land,yes,artiodactyla,"Seymour and Blaylock, 2000",h
+Ovis,aries,sheep,47.5,1.67669361,56.7,ml,56.7,1.75358306,land,yes,artiodactyla,"Seymour and Blaylock, 2000",h
+Sus,scrofa,pig,102,2.00860017,94,ml,94,1.97312785,land,yes,artiodactyla,"Seymour and Blaylock, 2000",o
+Felis,catus,cat,3.03,0.48144263,2.22,ml,2.22,0.34635297,land,yes,carnivora,"Seymour and Blaylock, 2000",o
+Canis,lupus,dog,20.9398,1.32097253,34.365717,ml,34.365717,1.53612541,land,yes,carnivora,"Hillman and Hedrick, 2015; Seymour and Blaylock, 2000",o
+Macropus,robustus,european kangaroo,30.3,1.48144263,27,ml,27,1.43136376,land,yes,diprotodontia,"Seymour and Blaylock, 2000",h
+Oryctolagus,cuniculus,domestic rabbit,2.51,0.39967372,1.67,ml,1.67,0.22271647,land,yes,lagomorpha,"Seymour and Blaylock, 2000",o
+Equus,caballus,horse,443,2.64640373,1262,ml,1262,3.10105935,land,yes,perissodactyla,"Jones et al., 1989; Seymour and Blaylock, 2000",h
+Bradypus,tridactylus,three-toed sloth,3.73,0.57170883,3.13,ml,3.13,0.49554434,land,yes,pilosa,"Seymour and Blaylock, 2000",h
+Homo,sapiens,human,70.6,1.8488047,78.53,ml,78.53,1.8950356,land,yes,primates,"Smith and Wahrenbrock 1974; Seymour and Blaylock, 2000; Hillman and Hedrick, 2015",o
+Macaca,fascicularis,cynomolgus monkey,4.6,0.66275783,3.91,ml,3.91,0.59217676,land,yes,primates,"Seymour and Blaylock, 2000",o
+Macaca,mulatta,rhesus monkey,4.24,0.62736586,3.25,ml,3.25,0.51188336,land,yes,primates,"Seymour and Blaylock, 2000",o
+Elephas,maximus,asian elephant,2960,3.47129171,3710,ml,3710,3.56937391,land,yes,proboscidea,"Seymour and Blaylock, 2000",h
+Loxodonta,africana,african elephant,4080,3.61066016,5220,ml,5220,3.7176705,land,yes,proboscidea,"Seymour and Blaylock, 2000",h
+Cavia,porcellus,guinea pig,0.52,-0.2839967,0.71,ml,0.71,-0.1487417,land,yes,rodentia,"Seymour and Blaylock, 2000",h
+Mus,musculus,mouse,0.03,-1.5228787,0.04,ml,0.04,-1.39794,land,yes,rodentia,"Seymour and Blaylock, 2000",o
+Rattus,rattus,rat,0.34,-0.4685211,0.2,ml,0.2,-0.69897,land,yes,rodentia,"Seymour and Blaylock, 2000",o
+Rattus,norvegicus,rat,0.23,-0.6382722,0.17,ml,0.17,-0.7695511,land,yes,rodentia,"Seymour and Blaylock, 2000",o
+Mirounga,angustirostris,northern elephant seal,102,2.00860017,104.9,ml,104.9,2.02077549,aquatic,yes,carnivora,"Thornton et al., 2005",c
+Zalophus,californianus,california sea lion,36,1.5563025,72.9666667,ml,72.9666667,1.86312451,aquatic,yes,carnivora,"Ponganis, Kooyman, and Zornow, 1991",c
