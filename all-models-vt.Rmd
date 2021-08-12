@@ -1,48 +1,4 @@
----
-title: "Mammal Tidal Volume"
-author: "Fahlman & DeRuiter Labs"
-date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
----
-
-```{r setup, include=FALSE}
-require(tidyverse) # for data wrangling
-require(mosaic) # for ggformula graphics
-require(plotly) # for interactive graphs
-# require(evomap) # for PGLS ancova/CI/PIs
-require(ape) # for trees
-require(mice) # for pooling estimated from fitted pgls models
-require(broom.mixed) # for pulling results out of gls fitted model objects
-require(carEx) # for ANOVA for pgls
-# to install carEx:
-# install.packages("carEx", repos="http://R-Forge.R-project.org")
-# to install evomap run:
-# remotes::install_github('JeroenSmaers/evomap')
-# require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons)
-require(dplyr)
-require(car)  #  needed for Anova(), avPlots, vif functions
-require(MuMIn)  #  needed for dredge function, pgls utilities?
-require(sjPlot) # for tables of model summary info
-require(pander) # for table of Anova() results
-require(nlme) # for gls()
-require(MASS) #for vcova
-require(carEx)
-# require(prediction)
-# require(multcomp)
-# require(nlstools)
-require(ggeffects) # for plotting marginal model predictions
-require(glmmTMB) # for fitting RE models. can use lme4 also
-
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
-theme_set(theme_minimal(base_size = 14))
-my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
-
-source('utils/gls-utils.R')
-source('utils/Anova.mira.R')
-```
+# Mammal Tidal Volume
 
 ## Data
 
@@ -51,7 +7,7 @@ Predictors: body mass interacting with habitat.
 
 ### Read in data 
 
-```{r, data-in}
+```{r, vt-data-in}
 mammal_vt <- read.csv("data/vt.csv") 
 ```
 
@@ -63,7 +19,7 @@ mammal_vt <- read.csv("data/vt.csv")
 
 Rename some variables and create species name from genus and species. 
 
-```{r, data-rename}
+```{r, vt-data-rename}
 mammal_vt <- mammal_vt %>%
   rename(source = Source,
          order = order.corrected,
@@ -76,7 +32,7 @@ mammal_vt <- mammal_vt %>%
 
 Keep only variables we will be using. And `factor()` "chr" variables.
 
-```{r, data-select}
+```{r, vt-data-select}
 mammal_vt <- mammal_vt %>%
   dplyr::select(order,
                 genus,
@@ -98,7 +54,7 @@ mammal_vt <- mammal_vt %>%
 A few quick graphs just to make sure the data are looking as we expect (error checking).
 
 
-```{r, create-plot-no-display}
+```{r, vt-create-plot-no-display}
 my_scatter_plot <- gf_point(log10vt ~ log10.body.mass | habitat,
          color = ~order,
          # size = ~parse_number(n_animals),
@@ -112,11 +68,11 @@ my_scatter_plot <- gf_point(log10vt ~ log10.body.mass | habitat,
           y = 'Log10(Vt (liter))') 
 ```
 
-```{r display-static, warning = FALSE, message = FALSE}
+```{r, vt-display-static, warning = FALSE, message = FALSE}
 my_scatter_plot
 ```
 
-```{r disply-interactive, warning = FALSE, message = FALSE}
+```{r, vt-display-interactive}
 plotly::ggplotly(my_scatter_plot) %>%
   plotly::layout(legend = list(#orientation = 'h',
                                font = list(size = 6)))
@@ -126,7 +82,7 @@ plotly::ggplotly(my_scatter_plot) %>%
 
 Will not account for phylogeny at all in the model structure. Predictors: body mass interacting with habitat. 
 
-```{r, fit-lm}
+```{r, vt-fit-lm}
 lm_model <- lm(log10vt ~ log10.body.mass * habitat,
                  data = mammal_vt)
 tab_model(lm_model) 
@@ -138,7 +94,7 @@ pander(lm_anova_results)
 
 ### Model Assessment
 
-```{r, assess-lm}
+```{r, vt-assess-lm}
 lm_preds <- predict(lm_model, se.fit = TRUE)
 
 mammal_vt <- mammal_vt  %>% mutate(lm_resids = resid(lm_model),
@@ -157,7 +113,7 @@ gf_dhistogram(~lm_resids, data = mammal_vt,
 
 Any predictors *not shown* in a plot are held constant at their mean or most common value.
 
-```{r, predict-lm}
+```{r, vt-predict-lm}
 gf_line(lm_fitted ~ log10.body.mass,
          color = ~habitat,
          data = mammal_vt) %>%
@@ -178,7 +134,7 @@ gf_point(log10vt ~ lm_fitted, data = mammal_vt,
 
 Will include nested random effects of order/family/genus/species, expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are required to be "further" apart than any other two.
 
-```{r, fit-re}
+```{r, vt-fit-re}
 re_model <- glmmTMB(log10vt ~ log10.body.mass * habitat + (1 | order/genus/species),
                  data = mammal_vt)
 
@@ -190,7 +146,7 @@ pander(re_anova_results)
 
 ### Model Assessment
 
-```{r, assess-re}
+```{r, vt-assess-re}
 re_ave_preds <- predict(re_model, 
                     se.fit = TRUE,
                     re.form = ~0)
@@ -218,15 +174,56 @@ gf_dhistogram(~re_resids, data = mammal_vt) %>%
 
 ### Predictions from Model
 
-```{r, predict-re}
-gf_line(re_ave_fitted ~ log10.body.mass,
-         color = ~habitat,
-         data = mammal_vt) %>%
-  gf_ribbon(re_ave_lo + re_ave_hi ~ log10.body.mass,
-            color = ~habitat, fill = ~habitat) %>% 
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  gf_theme(scale_fill_manual(values = my_colors))
+```{r, vt-predict-re}
+mammal_vt <- mammal_vt %>%
+  mutate(Habitat = stringr::str_to_sentence(habitat))
 
+re_preds <- gf_point(10^log10vt ~ 10^log10.body.mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_vt) %>% 
+  gf_line(10^re_ave_fitted ~ 10^log10.body.mass,
+         color = ~Habitat,
+         data = mammal_vt,
+         text = ~Habitat) %>%
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10.body.mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) %>% 
+  gf_labs(x = 'Body Mass (kg)', y = 'Tidal Volume (mL)') %>% 
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_theme(scale_fill_manual(values = my_colors)) %>%
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE)))
+
+# For tidal volume, terrestrial (Stahl 1967): SV (ml) = 7.69 * body mass^1.04 
+# For tidal volume, marine (Fahlman 2020, sea lion/cetacean papers): SV (l) = 0.0372 * body mass^0.97 
+
+pub_models <- data.frame(mass = seq(from = 0.008, by = 0.1, to = 5200)) %>%
+  mutate(vt_stahl = 7.69 * mass^1.04,
+         vt_fahlman = 37.2 * mass^0.97)
+
+re_preds <- re_preds %>%
+  gf_line(vt_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') %>%
+  gf_line(vt_fahlman ~ mass, data = pub_models, color = 'black',
+          linetype = 'dashed', text = ~'Fahlman') %>%
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank())
+```
+
+```{r, vt-re-predictions-interactive, fig.cap = 'Observed and predicted tidal volume as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967) and black dashed line on Fahlman (2020).', fig.width = 6.5, fig.height = 3.5}
+re_preds %>% gf_theme(legend.position='none') %>% ggplotly(tooltip = 'text')
+```
+
+```{r, vt-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+
+```{r, vt-pred-vs-obs}
 gf_point(log10vt ~ re_ind_fitted, data = mammal_vt,
          alpha = 0.1) %>%
   gf_labs(y = 'Observed log10(Vt)',
@@ -237,7 +234,7 @@ gf_point(log10vt ~ re_ind_fitted, data = mammal_vt,
 
 The graph above is a bit "cheating" as we have a random effect of species, but there are only 1-2 measurements for most of the species (nearly guaranteeing that our estimates will be nearly perfect).  What if we also check out the predictions accounting for the modeled effects of Order and Genus, but predicting for the "average" species in each Genus?
 
-```{r}
+```{r, more-pred-vs-obs-no-species}
 no_species <- mammal_vt %>%
   mutate(species = NA)
 re_genus_level_preds <- predict(re_model, 
@@ -253,11 +250,14 @@ gf_point(log10vt ~ re_genus_level_preds$fit, data = mammal_vt,
   gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
 ```
 
+
+
+
 ## PGLS
 
 ### Read in Tree Data
 
-```{r, message = FALSE}
+```{r, vt-trees-in, message = FALSE}
 #Read in the trees from Upham et al
 
 tree_path <- paste("data/upham-trees/Completed_5911sp_topoCons_FBDasZhouEtAl")

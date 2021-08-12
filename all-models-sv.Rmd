@@ -1,44 +1,4 @@
----
-title: "Mammal Stroke Volume"
-author: "Fahlman & DeRuiter Labs"
-date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
----
-
-```{r setup, include=FALSE}
-require(tidyverse) # for data wrangling
-require(mosaic) # for ggformula graphics
-require(plotly) # for interactive graphs
-require(evomap) # for PGLS ancova/CI/PIs
-# to install evomap run:
-# remotes::install_github('JeroenSmaers/evomap')
-require(ape) # for trees
-require(mice) # for pooling estimated from fitted pgls models
-require(broom.mixed) # for pulling results out of gls fitted model objects
-require(carEx)
-# to install carEx:
-# install.packages("carEx", repos="http://R-Forge.R-project.org")
-require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons)
-require(dplyr)
-require(car)  #  needed for Anova(), avPlots, vif functions
-require(sjPlot) # for tables of model summary info
-require(pander) # for table of Anova() results
-require(nlme) # for gls()
-require(MASS) #for vcova
-require(ggeffects) # for plotting marginal model predictions
-require(glmmTMB) # for fitting RE models. can use lme4 also
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
-theme_set(theme_minimal(base_size = 14))
-my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
-
-source('utils/gls-utils.R')
-source('utils/Anova.mira.R')
-
-```
-
+# Mammal Stroke Volume
 ## Data
 
 Predictors: body mass interacting with habitat.
@@ -46,7 +6,7 @@ Predictors: body mass interacting with habitat.
 
 ### Read in data 
 
-```{r, data-in}
+```{r, sv-data-in}
 mammal_sv <- read.csv("data/sv.csv") 
 ```
 
@@ -58,7 +18,7 @@ mammal_sv <- read.csv("data/sv.csv")
 
 Rename some variables and create species name from genus and species. 
 
-```{r, data-rename}
+```{r, sv-data-rename}
 mammal_sv <- mammal_sv %>%
   rename(source = Source,
          order = order.corrected,
@@ -71,7 +31,7 @@ mammal_sv <- mammal_sv %>%
 
 Keep only variables we will be using. And `factor()` "chr" variables.
 
-```{r, data-select}
+```{r, sv-data-select}
 mammal_sv <- mammal_sv %>%
   dplyr::select(order,
                 genus,
@@ -93,7 +53,7 @@ mammal_sv <- mammal_sv %>%
 A few quick graphs just to make sure the data are looking as we expect (error checking).
 
 
-```{r, create-plot-no-display}
+```{r, sv-create-plot-no-display}
 my_scatter_plot <- gf_point(log10sv ~ log10.body.mass | habitat,
          color = ~order,
          # size = ~parse_number(n_animals),
@@ -107,11 +67,11 @@ my_scatter_plot <- gf_point(log10sv ~ log10.body.mass | habitat,
           y = 'Log10(SV (ml))') 
 ```
 
-```{r display-static, warning = FALSE, message = FALSE}
+```{r, sv-display-static, warning = FALSE, message = FALSE}
 my_scatter_plot
 ```
 
-```{r disply-interactive, warning = FALSE, message = FALSE}
+```{r, sv-disply-interactive, warning = FALSE, message = FALSE}
 plotly::ggplotly(my_scatter_plot) %>%
   plotly::layout(legend = list(#orientation = 'h',
                                font = list(size = 6)))
@@ -123,7 +83,7 @@ Notes: If we wanted to use for web or publication, we would refine. We can edit 
 
 Will not account for phylogeny at all in the model structure. Predictors: body mass interacting with habitat. Weight by number of individuals (if have data later, don't have it now)?
 
-```{r, fit-lm}
+```{r, sv-fit-lm}
 lm_model <- lm(log10sv ~ log10.body.mass * habitat,
                  data = mammal_sv)
 summary(lm_model)
@@ -136,7 +96,7 @@ pander(lm_anova_results)
 
 ### Model Assessment
 
-```{r, assess-lm}
+```{r, sv-assess-lm}
 lm_preds <- predict(lm_model, se.fit = TRUE)
 
 mammal_sv <- mammal_sv  %>% mutate(lm_resids = resid(lm_model),
@@ -155,7 +115,7 @@ gf_dhistogram(~lm_resids, data = mammal_sv,
 
 Any predictors *not shown* in a plot are held constant at their mean or most common value.
 
-```{r, predict-lm}
+```{r, sv-predict-lm}
 gf_line(lm_fitted ~ log10.body.mass,
          color = ~habitat,
          data = mammal_sv) %>%
@@ -178,7 +138,7 @@ Can refine the plot of predictions later on.
 
 Will include nested random effects of order/family/genus/species, expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
 
-```{r, fit-re}
+```{r, sv-fit-re}
 re_model <- glmmTMB(log10sv ~ log10.body.mass * habitat +
                       (1 | order/genus/species),
                  data = mammal_sv)
@@ -190,7 +150,7 @@ pander(re_anova_results)
 
 ### Model Assessment
 
-```{r, assess-re}
+```{r, sv-assess-re}
 re_ave_preds <- predict(re_model, 
                     se.fit = TRUE,
                     re.form = ~0)
@@ -219,15 +179,52 @@ gf_dhistogram(~re_resids, data = mammal_sv,
 
 ### Predictions from Model
 
-```{r, predict-re}
-gf_line(re_ave_fitted ~ log10.body.mass,
-         color = ~habitat,
-         data = mammal_sv) %>%
-  gf_ribbon(re_ave_lo + re_ave_hi ~ log10.body.mass,
-            color = ~habitat, fill = ~habitat) %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  gf_theme(scale_fill_manual(values = my_colors)) 
+```{r, sv-predict-re}
+mammal_sv <- mammal_sv %>%
+  mutate(Habitat = stringr::str_to_sentence(habitat))
 
+re_preds <- gf_point(10^log10sv ~ 10^log10.body.mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_sv) %>% 
+  gf_line(10^re_ave_fitted ~ 10^log10.body.mass,
+         color = ~Habitat,
+         data = mammal_sv,
+         text = ~Habitat) %>%
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10.body.mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) %>% 
+  gf_labs(x = 'Body Mass (kg)', y = 'Stroke Volume (mL/beat)') %>% 
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_theme(scale_fill_manual(values = my_colors)) %>%
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE))
+  )
+
+# For stroke volume (Stahl 1967, using prediction equations from Stahl for cardiac output (ml/min) and heat rate(beats/min)): SV (ml/beat) = [187 * body mass(kg)^0.81]/[241 * body mass (kg) ^-0.25]
+
+pub_models <- data.frame(mass = seq(from = 0.029, by = 0.1, to = 5000)) %>%
+  mutate(sv_stahl = (187*mass^0.81) / (241 * mass^-0.25))
+
+re_preds <- re_preds %>%
+  gf_line(sv_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') %>%
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank())
+```
+
+```{r, fig.cap = 'Observed and predicted stroke volume as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967).', fig.width = 6.5, fig.height = 3.5}
+re_preds %>% gf_theme(legend.position='none') %>% ggplotly(tooltip = 'text')
+```
+
+```{r, sv-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+```{r, pred-vs-fitted}
 gf_point(log10sv ~ re_ind_fitted, data = mammal_sv,
          alpha = 0.1) %>%
   gf_labs(y = 'Observed log10(sv)',
@@ -236,30 +233,11 @@ gf_point(log10sv ~ re_ind_fitted, data = mammal_sv,
   gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
 ```
 
-The graph above is a bit "cheating" as we have a random effect of species, but there are only 1-2 measurements for most of the species (nearly guaranteeing that our estimates will be nearly perfect).  What if we also check out the predictions accounting for the modeled effects of Order and Genus, but predicting for the "average" species in each Genus?
-
-```{r, predict-re-2}
-gf_line(re_ave_fitted ~ log10.body.mass,
-         color = ~habitat,
-         data = mammal_sv) %>%
-  gf_ribbon(re_ave_lo + re_ave_hi ~ log10.body.mass,
-            color = ~habitat, fill = ~habitat) %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  gf_theme(scale_fill_manual(values = my_colors)) 
-
-gf_point(log10sv ~ re_ind_fitted, data = mammal_sv,
-         alpha = 0.1) %>%
-  gf_labs(y = 'Observed log10(fH)',
-          x = 'Model-predicted, Order-specific log10(fH)',
-          title = 'Mixed-effects Model (RE of Order/Genus)') %>%
-  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
-```
-
 
 
 ## PGLS
 
-```{r, setup-trees, message = FALSE}
+```{r, sv-setup-trees, message = FALSE}
 #Read in the trees from Upham et al
 
 tree_path <- paste("data/upham-trees/Completed_5911sp_topoCons_FBDasZhouEtAl")
@@ -309,7 +287,7 @@ taxonomy <- read_csv('data/upham-trees/taxonomy_mamPhy_5911species.csv')
 
 Fit models, one model for every tree in our list.
 
-```{r, fit-pgls}
+```{r, sv-fit-pgls}
 pgls_models <- list()
 
 for (t in c(1:length(treeset))){
@@ -356,7 +334,7 @@ Note: we tried to fit `r length(treeset)` PGLS models (each with a different tre
 
 Combine the many PGLS model runs together into one summary combined model according to Rubin's rule.
 
-```{r, test-pgls}
+```{r, sv-test-pgls}
 # as.mira takes the list of models and create an object to be used by the mice package
 pgls_mira <- as.mira(pgls_models)  
 # # pool summarise the models using Rubin's rule corrected for small samples
@@ -376,7 +354,7 @@ pander(pgls_anova)
 
 Alternative approach: using `MuMIn` to do model averaging. Was it right to weight all of the models/trees equally?
 
-```{r, avg-pgls}
+```{r, sv-avg-pgls}
 pgls_avg <- model.avg(pgls_models, 
                       rank = function(x) 1)
 ```
@@ -387,7 +365,7 @@ For the PGLS model, we also want to extract the estimate of $\Lambda$, which tel
 
 Simple approach: take the mean of the estimates of $\Lambda$ from all the individual fitted models.
 
-```{r, get-lambda}
+```{r, sv-get-lambda}
 lambda <- mean(unlist(purrr::map(pgls_models, function(x) x$modelStruct$corStruct)))
 lambda
 ```

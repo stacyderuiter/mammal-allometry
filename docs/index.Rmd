@@ -1,5 +1,6 @@
 ---
 title: "Mammal Allometry - Supplemental Information"
+author: "He et al."
 output: html_document
 ---
 
@@ -15,13 +16,13 @@ All datasets used in the analysis, as well as a [cleaned-up Excel file](https://
 
 ## Supplemental Information
 
-Code and results of all model fitting are available in the repository. The .Rmd files in the main directory are the source code; you can also view compiled versions at the links below.
+Code and results for all model fitting are available in the repository. The .Rmd files in the main directory are the source code; you can also view a [compiled version](supplement.html) on this site.
 
-*Note: our plan is to update to a version with just one file/page with sections for each of the different response variables.*
+<!-- *Note: our plan is to update to a version with just one file/page with sections for each of the different response variables.* -->
 
-- [Metabolic rate models](all-models-bmr.html)
-- [Breathing frequency models](all-models-fr.html)
-- [Heart rate models](all-models-hr.html)
-- [Stroke volume models](all-models-sv.html)
-- [Tidal volume models](all-models-vt.html)
-- Model predictions: [Cardiac output and total ventilation](more-predictions.html)
+<!-- - [Metabolic rate models](all-models-bmr.html) -->
+<!-- - [Breathing frequency models](all-models-fr.html) -->
+<!-- - [Heart rate models](all-models-hr.html) -->
+<!-- - [Stroke volume models](all-models-sv.html) -->
+<!-- - [Tidal volume models](all-models-vt.html) -->
+<!-- - Model predictions: [Cardiac output and total ventilation](more-predictions.html) -->

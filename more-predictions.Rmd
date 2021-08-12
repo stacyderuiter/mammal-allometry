@@ -1,37 +1,4 @@
----
-title: "more-predictions"
-author: "Fahlman and DeRuiter labs"
-date: "`r Sys.Date()`"
-output:
-  pdf_document:
-    fig_width: 7
-    fig_height: 6
-  word_document: default
-  html_document: default
----
-
-```{r setup, include=FALSE}
-require(tidyverse) # for data wrangling
-require(mosaic) # for ggformula graphics
-require(plotly) # for interactive graphs
-require(ape) # for trees
-require(mice) # for pooling estimated from fitted pgls models
-require(broom.mixed) # for pulling results out of gls fitted model objects
-require(car) # for ANOVA for pgls
-require(carEx)  #  needed for Anova(), avPlots, vif functions
-require(MuMIn)  #  needed for dredge function, pgls utilities?
-require(ggeffects) # for plotting marginal model predictions
-require(glmmTMB) # for fitting RE models. can use lme4 also
-require(lme4) # for bootMer
-require(purrr) # for map() functions
-
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, 
-                      warning = FALSE, cache = TRUE,
-                      fig.path = 'figures/')
-theme_set(theme_minimal(base_size = 14))
-
-my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
-```
+# Additional Predictions (Derived Quantities)
 
 ## Cardiac Output
 
@@ -151,13 +118,13 @@ cardiac_mass <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_preds,
   gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
           y = 'Predicted Cardiac Output (mL/min)',
           x = 'Body Mass (kg)') %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  ggplotly(tooltip = 'text') 
+  gf_theme(scale_color_manual(values = my_colors)) 
 
+ggplotly(cardiac_mass, tooltip = 'text') 
+```
+
+```{r, cardiac-mass-image, fig.show = 'hide', dev = 'jpeg'}
 cardiac_mass
-
-htmlwidgets::saveWidget(cardiac_mass, "figures/cardiac_mass.html")
-  
 ```
 
 ```{r, cardiac-vs-mass-log-scale}
@@ -171,17 +138,15 @@ cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_pre
   gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
           y = 'Predicted Cardiac Output (mL/min)), Log10 scale',
           x = 'Body Mass (kg), Log10 scale') %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  ggplotly(tooltip = 'text')
+  gf_theme(scale_color_manual(values = my_colors))
+  
 
-cardiac_mass_log
-
-htmlwidgets::saveWidget(cardiac_mass_log, "figures/cardiac_mass_log.html")
+ggplotly(cardiac_mass_log, tooltip = 'text')
 ```
 
-Notes: The figure could also, of course, be non-interactive.  
-
-We can also make predictions for a "random selection of hypothetical new species of various masses" instead if you want to get a graph of lines with symmetrical error bands.
+```{r, cardiac-mass-log-image, fig.show = 'hide', dev = 'jpeg'}
+cardiac_mass_log
+```
 
 ## Total Ventilation
 
@@ -297,12 +262,13 @@ vent_mass <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
   gf_labs(title = 'Expected Ventilation\nfor the species modeled',
           y = 'Predicted Ventilation (mL/min)',
           x = 'Body Mass (kg)') %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  ggplotly(tooltip = 'text') 
+  gf_theme(scale_color_manual(values = my_colors)) 
 
+ggplotly(vent_mass, tooltip = 'text')
+```
+
+```{r, vent-mass-image, fig.show = 'hide', dev = 'jpeg'}
 vent_mass
- 
-htmlwidgets::saveWidget(vent_mass, "figures/vent_mass.html") 
 ```
 
 ```{r, vent-vs-mass-log-scale}
@@ -316,14 +282,11 @@ vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
   gf_labs(title = 'Expected Ventilation\nfor the species modeled',
           y = 'Predicted Ventilation (mL/min), Log10 scale',
           x = 'Body Mass (kg), Log10 scale') %>%
-  gf_theme(scale_color_manual(values = my_colors)) %>%
-  ggplotly(tooltip = 'text') 
+  gf_theme(scale_color_manual(values = my_colors)) 
 
-vent_mass_log
-  
-htmlwidgets::saveWidget(vent_mass_log, "figures/vent_mass_log.html")
+ggplotly(vent_mass_log, tooltip = 'text')
 ```
 
-Notes: The figure could also, of course, be non-interactive.  
-
-We can also make predictions for a "random selection of hypothetical new species of various masses" instead if you want to get a graph of lines with symmetrical error bands.
+```{r, vent-mass-log-image, fig.show = 'hide', dev = 'jpeg'}
+vent_mass_log
+```

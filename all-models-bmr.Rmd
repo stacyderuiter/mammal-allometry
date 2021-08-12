@@ -1,48 +1,4 @@
----
-title: "Mammal Metabolic Rates"
-author: "Fahlman & DeRuiter Labs"
-date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    toc_float: true
----
-
-```{r setup, include=FALSE}
-require(tidyverse) # for data wrangling
-require(mosaic) # for ggformula graphics
-require(plotly) # for interactive graphs
-# require(evomap) # for PGLS ancova/CI/PIs
-require(ape) # for trees
-require(mice) # for pooling estimated from fitted pgls models
-require(broom.mixed) # for pulling results out of gls fitted model objects
-require(carEx) # for ANOVA for pgls
-# to install carEx:
-# install.packages("carEx", repos="http://R-Forge.R-project.org")
-# to install evomap run:
-# remotes::install_github('JeroenSmaers/evomap')
-# require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons)
-require(car)  #  needed for Anova(), avPlots, vif functions
-require(MuMIn)  #  needed for dredge function, pgls utilities?
-require(sjPlot) # for tables of model summary info
-require(pander) # for table of Anova() results
-require(nlme) # for gls()
-# require(multcomp)
-# require(nlstools)
-require(ggeffects) # for plotting marginal model predictions
-require(glmmTMB) # for fitting RE models. can use lme4 also
-# source("utils/augPairs.R")  #  needed for aug.pairs function
-# source("utils/MuMInUtilities.R")  #  needed for MuMIn.shrink.fit and MuMIn.shrink.resid
-# source("utils/qqnormWithBounds.R") 
-# source("PGLS model/broom_gls.R")
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, 
-                      warning = FALSE, cache = TRUE)
-theme_set(theme_minimal(base_size = 14))
-my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
-
-source('utils/gls-utils.R')
-source('utils/Anova.mira.R')
-```
+# Mammal Metabolic Rates
 
 ## Data
 
@@ -55,15 +11,10 @@ Predictors: body mass interacting with habitat, effect of >10 kg, (*maybe*) diet
 mammal_bmr <- read.csv("data/bmr.csv") 
 ```
 
-### Notes
-
-- `logbmr` is the base-10 logarithm of the BMR in ml $O_2$ per hour
-- `Log.of.BMR` is the base-10 logarithm of the BMR in kcal/day
-- `Log.of.Mass` or `logmb` is the base-10 logarithm of the mass in kg
 
 ### Cleaning
 
-Rename some variables and create species name from genus and species. (There is already a variable in the dataset `Species.Name` but just to be safe and 100% sure of consistency with the genus/species values that may be used in random effects models, building it here.)
+Rename some variables and create species name from genus and species. 
 
 ```{r, data-renaming}
 mammal_bmr <- mammal_bmr %>%
@@ -98,7 +49,7 @@ mammal_bmr <- mammal_bmr %>%
   arrange(order, genus, species)
 ```
 
-### Viz
+### Data Visualization
 A few quick graphs just to make sure the data are looking as we expect (error checking).
 
 
@@ -125,8 +76,6 @@ plotly::ggplotly(my_scatter_plot) %>%
   plotly::layout(legend = list(#orientation = 'h',
                                font = list(size = 6)))
 ```
-
-Notes: If we wanted to use for web or publication, we would refine. We can edit what info is shown when you hover over a data point, change color scheme, legend, etc.
 
 ## GLS
 
@@ -166,14 +115,16 @@ gf_dhistogram(~lm_resids, data = mammal_bmr,
 Any predictors *not shown* in a plot are held constant at their mean or most common value.
 
 ```{r, predict-gls}
-gf_line(lm_fitted ~ log10.body.mass,
+gf_line(10^lm_fitted ~ 10^log10.body.mass,
          color = ~habitat,
          data = mammal_bmr) %>%
-  gf_ribbon(lm_fit_lo + lm_fit_hi ~ log10.body.mass,
+  gf_ribbon(10^lm_fit_lo + 10^lm_fit_hi ~ 10^log10.body.mass,
             color = ~habitat, fill = ~habitat) %>%
   gf_facet_grid(~ diet) %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
-  gf_theme(scale_fill_manual(values = my_colors))
+  gf_theme(scale_fill_manual(values = my_colors)) %>%
+  gf_refine(scale_x_continuous(trans = 'log10'),
+            scale_y_continuous(trans = 'log10'))
 
 gf_point(log10.bmr ~ lm_fitted, data = mammal_bmr,
          alpha = 0.1) %>%
@@ -231,7 +182,7 @@ gf_dhistogram(~re_resids, data = mammal_bmr) %>%
 
 ### Predictions from Model
 
-```{r, re-predictions-by-habitat}
+```{r, re-predictions-by-habitat, fig.cap = 'Observed and predicted BMR as a function of mass and diet. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, and black line is based on Kleiber (1947).', fig.width = 8.5, fig.height = 3.5}
 mammal_bmr <- mammal_bmr %>%
   mutate(pretty_diet = case_when(diet == 'c'~ 'Carnivore',
                                  diet == 'h' ~ 'Herbivore',
@@ -239,22 +190,46 @@ mammal_bmr <- mammal_bmr %>%
          pretty_diet = factor(pretty_diet, levels = c('Herbivore', 'Omnivore', 'Carnivore')),
          Habitat = stringr::str_to_sentence(habitat))
 
-gf_point(log10.bmr ~ log10.body.mass,
+re_preds <- gf_point(10^log10.bmr ~ 10^log10.body.mass,
          color = ~Habitat, data = mammal_bmr,
-         size = 0.5, alpha = 0.4) %>%
-gf_line(re_ave_fitted ~ log10.body.mass,
+         size = 0.5, alpha = 0.4,
+         text = ~animal) %>%
+gf_line(10^re_ave_fitted ~ 10^log10.body.mass,
          color = ~Habitat,
-         data = mammal_bmr) %>%
-  gf_ribbon(re_ave_lo + re_ave_hi ~ log10.body.mass,
-            color = ~Habitat, fill = ~Habitat) %>%
+         data = mammal_bmr,
+         text = ~animal) %>%
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10.body.mass,
+            color = ~Habitat, fill = ~Habitat,
+            text = ~Habitat) %>%
   gf_facet_grid(~ pretty_diet) %>%
-  gf_labs(x = 'Log10(Body Mass (kg))', y = 'Log10(BMR)\n(Dots are observed, lines predicted)') %>% 
+  gf_labs(x = 'Body Mass (kg)', y = 'BMR (kcal/day)') %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
-  gf_theme(scale_fill_manual(values = my_colors))
+  gf_theme(scale_fill_manual(values = my_colors)) %>%
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(drop0trailing = TRUE))
+            ) %>%
+  gf_theme(plot.margin = unit(c(1,1,1,1), "cm"))
+  # Kleiber
+  # BMR (Kleiber, 1947): BMR (kcal/day) = 70 * body mass (kg) ^0.75
+pub_models <- data.frame(mass = seq(from = 0.001, by = 0.1, to = 5000)) %>%
+  mutate(kleiber_bmr = 70*mass^0.75)
 
+re_preds <- re_preds %>%
+  gf_line(kleiber_bmr ~ mass, data = pub_models, color = 'black',
+          text = ~"Kleiber") %>% 
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank())
+
+re_preds %>% gf_theme(legend.position='none') %>% ggplotly(tooltip = 'text')
 ```
 
-We wanted a graph of "aquatic vs terrestrial" -- is this what we meant? (My notes don't say any more about exactly what is to be shown...)
+```{r, bmr-predictions-by-habitat, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
 
 ```{r, pred-vs-fitted-re}
 gf_point(log10.bmr ~ re_ind_fitted, data = mammal_bmr,
@@ -430,7 +405,7 @@ for (t in c(1:length(treeset))){
   }
   )
 }
-pgls_models <- pgls_models[-which(lapply(pgls_models, is.null) == T)]
+pgls_models <- pgls_models[which(lapply(pgls_models, is.null) == FALSE)]
 ```
 
 Note: we tried to fit `r length(treeset)` PGLS models (each with a different tree); of these, model fitting failed for `r length(treeset) - length(pgls_models)`.
