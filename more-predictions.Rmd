@@ -133,12 +133,17 @@ cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_pre
          text = ~animal) %>%
   gf_errorbar(boot_lo + boot_hi ~ mean_mass, data = cardiac_preds,
               color = ~habitat) %>%
-  gf_refine(scale_x_continuous(trans='log10')) %>%
-  gf_refine(scale_y_continuous(trans='log10')) %>%
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) %>%
+  gf_refine(scale_y_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) %>%
   gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
-          y = 'Predicted Cardiac Output (mL/min)), Log10 scale',
-          x = 'Body Mass (kg), Log10 scale') %>%
-  gf_theme(scale_color_manual(values = my_colors))
+          y = 'Predicted Cardiac Output (mL/min))',
+          x = 'Body Mass (kg)') %>%
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_lims(x = c(0.001, 101000))
   
 
 ggplotly(cardiac_mass_log, tooltip = 'text')
@@ -277,12 +282,17 @@ vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
          text = ~animal) %>%
   gf_errorbar(boot_lo + boot_hi ~ mean_mass, data = vent_preds,
               color = ~habitat) %>%
-  gf_refine(scale_x_continuous(trans='log10')) %>%
-  gf_refine(scale_y_continuous(trans='log10')) %>%
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) %>%
+  gf_refine(scale_y_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) %>%
   gf_labs(title = 'Expected Ventilation\nfor the species modeled',
-          y = 'Predicted Ventilation (mL/min), Log10 scale',
-          x = 'Body Mass (kg), Log10 scale') %>%
-  gf_theme(scale_color_manual(values = my_colors)) 
+          y = 'Predicted Ventilation (mL/min)',
+          x = 'Body Mass (kg)') %>%
+  gf_theme(scale_color_manual(values = my_colors)) %>%
+  gf_lims(x = c(0.001, 101000))
 
 ggplotly(vent_mass_log, tooltip = 'text')
 ```

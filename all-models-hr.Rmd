@@ -200,14 +200,16 @@ re_preds <- gf_point(10^log10hr ~ 10^log10.body.mass,
   gf_theme(scale_color_manual(values = my_colors)) %>%
   gf_theme(scale_fill_manual(values = my_colors)) %>%
   gf_refine(scale_x_continuous(trans = 'log10',
-                               labels = scales::label_comma(drop0trailing = TRUE)
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)
                                ),
             scale_y_continuous(trans = 'log10',
-                               labels = scales::label_comma(drop0trailing = TRUE))
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))
             )
 
 # For heart rate (Stahl 1967): fH (beats/minute)= 241 * body mass (kg) ^-0.25
-pub_models <- data.frame(mass = seq(from = 0.009, by = 0.1, to = 70000)) %>%
+pub_models <- data.frame(mass = seq(from = 0.001, by = 10, to = 70000)) %>% # data.frame(mass = seq(from = 0.009, by = 0.1, to = 70000)) %>%
   mutate(hr_stahl = 241*mass^-0.25)
 
 re_preds <- re_preds %>%
@@ -215,7 +217,8 @@ re_preds <- re_preds %>%
           text = ~'Stahl') %>%
   # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
   gf_theme(legend.position = c(0.9, 0.9),
-           legend.title = element_blank())
+           legend.title = element_blank()) %>%
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
 ```
 
 ```{r, fig.cap = 'Observed and predicted heart rate as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967).', fig.width = 6.5, fig.height = 3.5}

@@ -196,14 +196,16 @@ re_preds <- gf_point(10^log10fr ~ 10^log10.body.mass,
   gf_theme(scale_color_manual(values = my_colors)) %>%
   gf_theme(scale_fill_manual(values = my_colors)) %>%
   gf_refine(scale_x_continuous(trans = 'log10',
-                              labels = scales::label_comma(drop0trailing = TRUE)),
+                              labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)),
             scale_y_continuous(trans = 'log10',
-                               labels = scales::label_comma(drop0trailing = TRUE)))
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)))
 
 # For breathing frequency, terrestrial (Stahl 1967): fR (breaths/minute) = 53.5 * body mass ^-0.26
 # For breathing frequency, marine (Mortola, 2006): fR (breaths/minute) = 33 * body mass ^-0.42
 
-pub_models <- data.frame(mass = seq(from = 0.015, by = 0.1, to = 42000)) %>%
+pub_models <- data.frame(mass = seq(from = 0.001, by = 10, to = 70000)) %>% # mass = seq(from = 0.015, by = 0.1, to = 42000)) %>%
   mutate(fr_stahl = 53.5*mass^-0.26,
          fr_mortola = 33*mass^-0.42)
 
@@ -214,7 +216,8 @@ re_preds <- re_preds %>%
           text = ~'Mortola') %>%
   # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
   gf_theme(legend.position = c(0.9, 0.9),
-           legend.title = element_blank())
+           legend.title = element_blank()) %>%
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
 ```
 
 ```{r, fig.cap = 'Observed and predicted breathing frequency as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967) for terrestrial species, and dashed black line on Mortola (2006) for marine species.', fig.width = 6.5, fig.height = 3.5}

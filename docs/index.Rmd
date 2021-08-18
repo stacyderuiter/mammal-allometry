@@ -1,7 +1,7 @@
 ---
 title: "Mammal Allometry - Supplemental Information"
 author: "He et al."
-output: html_document
+output: bookdown::html_document2
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +16,7 @@ All datasets used in the analysis, as well as a [cleaned-up Excel file](https://
 
 ## Supplemental Information
 
-Code and results for all model fitting are available in the repository. The .Rmd files in the main directory are the source code; you can also view a [compiled version](supplement.html) on this site.
+Code and results for all model fitting are available in the [project github repository](https://github.com/stacyderuiter/mammal-allometry). The .Rmd files in the main directory are the R source code; you can also view a [compiled version](supplement.html) on this site.
 
 <!-- *Note: our plan is to update to a version with just one file/page with sections for each of the different response variables.* -->
 
