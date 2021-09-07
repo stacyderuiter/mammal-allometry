@@ -2,7 +2,7 @@
 
 ## Data
 
-Predictors: body mass interacting with habitat, effect of >10 kg.
+Predictors: body mass interacting with habitat, effect of >10 kg, (*maybe*) diet.
 
 
 ### Read in data 
@@ -79,11 +79,11 @@ plotly::ggplotly(my_scatter_plot) %>%
 
 ## GLS
 
-Will not account for phylogeny at all in the model structure. Predictors: body mass interacting with habitat, effect of >10 kg.
+Will not account for phylogeny at all in the model structure. Predictors: body mass interacting with habitat, effect of >10 kg, (*maybe*) diet. 
 
 ```{r, fit-gls}
 lm_model <- lm(log10.bmr ~ log10.body.mass * habitat + 
-                 log10.body.mass*above.10kg, # + diet,
+                 log10.body.mass*above.10kg + diet,
                  data = mammal_bmr)
 tab_model(lm_model) 
 lm_anova_results <- car::Anova(lm_model)
@@ -120,7 +120,7 @@ gf_line(10^lm_fitted ~ 10^log10.body.mass,
          data = mammal_bmr) %>%
   gf_ribbon(10^lm_fit_lo + 10^lm_fit_hi ~ 10^log10.body.mass,
             color = ~habitat, fill = ~habitat) %>%
-  # gf_facet_grid(~ diet) %>% 
+  gf_facet_grid(~ diet) %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
   gf_theme(scale_fill_manual(values = my_colors)) %>%
   gf_refine(scale_x_continuous(trans = 'log10'),
@@ -144,7 +144,7 @@ Will include nested random effects of order/family/genus/species, expecting simi
 # this code may generate warnings that are harmless
 # https://stackoverflow.com/questions/67040472/warning-in-every-model-of-glmmtmb-givecsparse
 re_model <- glmmTMB(log10.bmr ~ log10.body.mass * habitat +
-                      log10.body.mass*above.10kg + # diet +
+                      log10.body.mass*above.10kg + diet +
                       (1 | order/genus/species),
                  data = mammal_bmr)
 
@@ -182,7 +182,7 @@ gf_dhistogram(~re_resids, data = mammal_bmr) %>%
 
 ### Predictions from Model
 
-```{r, re-predictions-by-habitat, fig.cap = 'Observed and predicted BMR as a function of mass. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, and black line is based on Kleiber (1947).', fig.width = 8.5, fig.height = 3.5}
+```{r, re-predictions-by-habitat, fig.cap = 'Observed and predicted BMR as a function of mass and diet. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, and black line is based on Kleiber (1947).', fig.width = 8.5, fig.height = 3.5}
 mammal_bmr <- mammal_bmr %>%
   mutate(pretty_diet = case_when(diet == 'c'~ 'Carnivore',
                                  diet == 'h' ~ 'Herbivore',
@@ -201,7 +201,7 @@ gf_line(10^re_ave_fitted ~ 10^log10.body.mass,
   gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10.body.mass,
             color = ~Habitat, fill = ~Habitat,
             text = ~Habitat) %>%
-  # gf_facet_grid(~ pretty_diet) %>%
+  gf_facet_grid(~ pretty_diet) %>%
   gf_labs(x = 'Body Mass (kg)', y = 'BMR (kcal/day)') %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
   gf_theme(scale_fill_manual(values = my_colors)) %>%
@@ -286,7 +286,7 @@ mammal_bmr <- mammal_bmr %>%
 # this code may generate warnings that are harmless
 # https://stackoverflow.com/questions/67040472/warning-in-every-model-of-glmmtmb-givecsparse
 wt_re_model <- glmmTMB(log10.bmr ~ log10.body.mass * habitat +
-                      log10.body.mass*above.10kg + # diet +
+                      log10.body.mass*above.10kg + diet +
                       (1 | order/genus/species),
                     weights = log.mass.weights,
                  data = mammal_bmr)
@@ -306,7 +306,7 @@ big_mammal_bmr <- mammal_bmr %>%
   mutate(across(where(is.factor), factor)) 
 # this code may generate warnings that are harmless
 # https://stackoverflow.com/questions/67040472/warning-in-every-model-of-glmmtmb-givecsparse
-big_re_model <- glmmTMB(log10.bmr ~ log10.body.mass * habitat + # diet +
+big_re_model <- glmmTMB(log10.bmr ~ log10.body.mass * habitat + diet +
                       (1 | order/genus/species),
                       data = big_mammal_bmr)
 
@@ -395,7 +395,7 @@ for (t in c(1:length(treeset))){
   # fit the model
  pgls_models[[t]] <- tryCatch({
     fittd <- gls(log10.bmr ~ log10.body.mass * habitat + 
-                     log10.body.mass * above.10kg, # diet ,
+                     log10.body.mass * above.10kg + diet ,
                    correlation = corPagel(value = 0.8, 
                                           phy = refit_tree, 
                                           fixed = FALSE, 
@@ -475,7 +475,7 @@ gf_line(pgls_fitted ~ log10.body.mass,
          data = mammal_bmr) %>%
   gf_ribbon(pgls_lo + pgls_hi ~ log10.body.mass,
             color = ~habitat, fill = ~habitat) %>%
-  # gf_facet_grid(~ diet) %>% 
+  gf_facet_grid(~ diet) %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
   gf_theme(scale_fill_manual(values = my_colors)) 
 
