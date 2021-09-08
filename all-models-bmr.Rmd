@@ -197,10 +197,12 @@ re_preds <- gf_point(10^log10.bmr ~ 10^log10.body.mass,
 gf_line(10^re_ave_fitted ~ 10^log10.body.mass,
          color = ~Habitat,
          data = mammal_bmr,
-         text = ~animal) %>%
+        text = ~Habitat,
+        alpha = 1) %>%
   gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10.body.mass,
             color = ~Habitat, fill = ~Habitat,
-            text = ~Habitat) %>%
+            text = ~Habitat,
+            alpha = 0.4) %>%
   # gf_facet_grid(~ pretty_diet) %>%
   gf_labs(x = 'Body Mass (kg)', y = 'BMR (kcal/day)') %>% 
   gf_theme(scale_color_manual(values = my_colors)) %>%
@@ -219,7 +221,7 @@ pub_models <- data.frame(mass = seq(from = 0.001, by = 10, to = 70000)) %>%
   mutate(kleiber_bmr = 70*mass^0.75)
 
 re_preds <- re_preds %>%
-  gf_line(kleiber_bmr ~ mass, data = pub_models, color = 'black',
+  gf_line(kleiber_bmr ~ mass, data = pub_models, color = 'black', 
           text = ~"Kleiber") %>% 
   # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
   gf_theme(legend.position = c(0.9, 0.1),
