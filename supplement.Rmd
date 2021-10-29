@@ -23,6 +23,7 @@ require(carEx) # for ANOVA for pgls
 # to install evomap run:
 # remotes::install_github('JeroenSmaers/evomap')
 # require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons)
+require(lme4)
 require(car)  #  needed for Anova(), avPlots, vif functions
 require(MuMIn)  #  needed for dredge function, pgls utilities?
 require(sjPlot) # for tables of model summary info
@@ -31,7 +32,7 @@ require(nlme) # for gls()
 # require(multcomp)
 # require(nlstools)
 require(ggeffects) # for plotting marginal model predictions
-require(glmmTMB) # for fitting RE models. can use lme4 also
+require(glmmTMB) # for fitting RE models. 
 # source("utils/augPairs.R")  #  needed for aug.pairs function
 # source("utils/MuMInUtilities.R")  #  needed for MuMIn.shrink.fit and MuMIn.shrink.resid
 # source("utils/qqnormWithBounds.R") 
