@@ -64,3 +64,6 @@ source('utils/Anova.mira.R')
 
 ```{r, child = 'more-predictions.Rmd'}
 ```
+
+```{r, child = 'more-comparisons.Rmd'}
+```
