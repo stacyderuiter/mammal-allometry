@@ -1,0 +1,191 @@
+# Mammal Metabolic Rates
+
+## Data
+
+In this iteration Rebecca did a deep dive into the references and pulled out those that had clear indications what is defined as Basal metabolic rate. The dataset now includes  columns that indicate which ones were fulfilled for each species. 
+
+We also curated the data by body mass data so the species included have somewhat equal range for aquatic and terrestrial. All body masses below 10kg and above about 7000 kg were removed. We have also removed the diet information to focus on the BMR and derived quantities.
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, data-in}
+mammal_bmr <- read_csv("data/rmrdata.csv",
+                       show_col_types = FALSE)
+```
+
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, data-renaming}
+mammal_bmr <- mammal_bmr |>
+  rename(mass_kg = mass,
+         log10_mass = logmb,
+         log10_bmr = logrmr) |>
+  rename_with(tolower) |>
+  mutate(order = str_to_title(order),
+         family = str_to_title(family),
+         genus = str_to_title(genus),
+         animal = paste(genus, species)
+         )
+```
+
+Keep only variables we will be using. And "factor" "chr" variables.
+
+```{r, select-and-factor-data}
+mammal_bmr <- mammal_bmr |>
+  dplyr::select(order,
+                family,
+                genus,
+                species, 
+                mass_kg,
+                log10_mass,
+                log10_bmr,
+                habitat,
+                animal
+         ) |>
+  mutate(across(where(is.character), factor)) |>
+  arrange(order, genus, species)
+```
+
+### Data Visualization
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, create-plot-no-display}
+my_scatter_plot <- gf_point(log10_bmr ~ log10_mass | habitat,
+         color = ~order,
+         # size = ~parse_number(n_animals),
+         text = ~animal,
+         data = mammal_bmr,
+         alpha = 0.5) |>
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) |>
+  gf_theme(scale_color_viridis_d('Order')) |>
+  gf_labs(x = 'Log10(Mass (kg))',
+          y = 'Log10(BMR (kcal/day))') 
+```
+
+```{r display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r disply-interactive, warning = FALSE, message = FALSE}
+plotly::ggplotly(my_scatter_plot) |>
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family (not genus/species due to lack of data; for example we have one row per species in the dataset). We are thus expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
+
+```{r, fit-re-model}
+# this code may generate warnings that are harmless
+# https://stackoverflow.com/questions/67040472/warning-in-every-model-of-glmmtmb-givecsparse
+re_model <- glmmTMB(log10_bmr ~ log10_mass * habitat +
+                      (1 | order/family),
+                 data = mammal_bmr)
+
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+names(re_anova_results)[3] <- 'p'
+pander(re_anova_results)
+```
+
+According to this model, the data provide very strong evidence that mass and habitat are associated with BMR (p = `r signif(re_anova_results$p[1], digits = 2)` and p = `r signif(re_anova_results$p[2], digits = 2)`), and moderate evidence of an interaction between body mass and habitat (p = `r signif(re_anova_results$p[3], digits = 2)`).
+
+### Model Assessment
+
+Graphical checks below don't provide evidence of any problems with the residual normality, residual independence, constant residual variance, and linearity conditions that have to be met for this model to be appropriate for the data.
+
+```{r, predict-assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_bmr <- mammal_bmr |>
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+
+# save fitted model and data
+saveRDS(mammal_bmr, 'fitted-models/mr-data.RDS')
+saveRDS(re_model, 'fitted-models/mr-re-model.RDS')
+
+
+gf_point(re_resids ~ re_ind_fitted, data = mammal_bmr)
+acf(resid(re_model))
+gf_dhistogram(~re_resids, data = mammal_bmr, bins = 11) |>
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+```{r, re-predictions-by-habitat, fig.cap = 'Observed and predicted BMR as a function of mass. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, and black line is based on Kleiber (1947).', fig.width = 8.5, fig.height = 3.5}
+mammal_bmr <- mammal_bmr |>
+  mutate(Habitat = stringr::str_to_sentence(habitat))
+
+re_preds <- gf_point(10^log10_bmr ~ 10^log10_mass,
+         color = ~Habitat, data = mammal_bmr,
+         size = 0.5, alpha = 0.4,
+         text = ~animal) |>
+gf_line(10^re_ave_fitted ~ 10^log10_mass,
+         color = ~Habitat,
+         data = mammal_bmr,
+        text = ~Habitat,
+        alpha = 1) |>
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10_mass,
+            color = ~Habitat, fill = ~Habitat,
+            text = ~Habitat,
+            alpha = 0.4) |>
+  gf_labs(x = 'Body Mass (kg)', y = 'BMR (kcal/day)') |> 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  gf_theme(scale_fill_manual(values = my_colors)) |>
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))
+            ) |>
+  gf_theme(plot.margin = unit(c(1,1,1,1), "cm"))
+  # Kleiber
+  # BMR (Kleiber, 1947): BMR (kcal/day) = 70 * body mass (kg) ^0.75
+pub_models <- data.frame(mass = seq(from = 9, by = 10, to = 10000)) |>
+  mutate(kleiber_bmr = 70*mass^0.75)
+
+re_preds <- re_preds |>
+  gf_line(kleiber_bmr ~ mass, data = pub_models, color = 'black', 
+          text = ~"Kleiber") |> 
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
+
+re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
+```
+
+```{r, bmr-predictions-by-habitat, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+
+```{r, pred-vs-fitted-re}
+gf_point(log10_bmr ~ re_ind_fitted, data = mammal_bmr,
+         alpha = 0.1) |>
+  gf_labs(y = 'Observed log10(BMR)',
+          x = 'Model-predicted, Order-and-Family-specific log10(BMR)',
+          title = 'Mixed-effects Model (RE of Order/Family)') |>
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+

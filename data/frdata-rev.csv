@@ -1,0 +1,167 @@
+name,order,family,genus,species,mass,logmb,fr,logfr,habitat,adult,fasted,resting,tnz,nonrep,sedated
+,,,,,,,,,,,,,,,
+northern bottlenose whale,artiodactyla,Ziphiidae,Hyperoodon,ampullatus,6650,3.822821645,1.1,0.041392685,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+asian elephant,proboscidea,Elephantidae,Elephas,maximus,4550,3.658011397,7,0.84509804,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+minke whale,artiodactyla,Balaenopteridae,Balaenoptera,acutorostrata,3842.5,3.584613876,0.83375,-0.078964153,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+rhino,perissodactyla,Rhinocerotidae,Ceratotherium,simum,3091,3.490099005,11,1.041392685,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+African and asian elephant,proboscidea,Elephantidae,multiple elephants,multiple elephants,2710,3.432969291,7.3,0.86332286,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+african elephant,proboscidea,Elephantidae,Loxodonta,africana,2611,3.416806872,5,0.698970004,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+killer whale/orca,artiodactyla,Delphinidae,Orcinus,orca,2026.2,3.306682311,1.32,0.120573931,aquatic,y,m,y,m,y,n
+,,,,,,,,,,,,,,,
+hippo,artiodactyla,Hippopotamidae,Hippopotamus,amphibius,1900,3.278753601,6,0.77815125,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+Humpback whale,artiodactyla,Balaenopteridae,Megaptera,novaeangliae,1360.78,3.133787918,3,0.477121255,aquatic,n,n,y,m,m,n
+,,,,,,,,,,,,,,,
+northern elephant seal,carnivora,Phocidae,Mirounga,angustirostris,1175,3.070037867,15.3,1.184691431,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+giraffe,artiodactyla,Giraffidae,Giraffa,camelopardalis,1012,3.005180513,7,0.84509804,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+walrus,carnivora,Odobenidae,Odobenus,rosmarus,963.679,2.983932395,3.82308,0.582413386,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+pilot whale,artiodactyla,Delphinidae,Globicephala,macrorhynchus,845,2.926856709,0.69,-0.161150909,aquatic,y,m,y,m,m,n
+,,,,,,,,,,,,,,,
+wild water buffalo,artiodactyla,Bovidae,Bubalus,arnee,810,2.908485019,13,1.113943352,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+beluga whale,artiodactyla,Delphinidae,Delphinapterus,leucas,628,2.797959644,2.31,0.36361198,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+horse,perissodactyla,Equidae,Equus,caballus,620,2.792391689,12,1.079181246,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+common eland,artiodactyla,Bovidae,Tragelaphus,oryx,580,2.763427994,17,1.230448921,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+american bison,artiodactyla,Bovidae,Bison,bison,576,2.760422483,23,1.361727836,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+camel,artiodactyla,Camelidae,Camelus,dromedarius,550,2.740362689,13.5,1.130333768,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+cow,artiodactyla,Bovidae,Bos,taurus,544,2.7355989,28,1.447158031,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+false killer whale,artiodactyla,Delphinidae,Pseudorca,crassidens,525,2.720159303,3.4667,0.53991626,aquatic,y,m,y,m,m,n
+,,,,,,,,,,,,,,,
+two-humped camel,artiodactyla,Camelidae,Camelus,bactrianus,515,2.711807229,7,0.84509804,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+polar bear,carnivora,Ursidae,Ursus,maritimus,500,2.698970004,13,1.113943352,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+moose,artiodactyla,Cervidae,Alces,alces,425,2.62838893,17,1.230448921,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+yak,artiodactyla,Bovidae,Bos,grunniens,395,2.596597096,30,1.477121255,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+weddell seal,carnivora,Phocidae,Leptonychotes,weddellii,373.875,2.572726426,4.75,0.67669361,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+dugon,sirenia,Dugongidae,Dugong,dugon,360,2.556302501,0.9,-0.045757491,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+pig,artiodactyla,Suidae,Sus,scrofa,302,2.480006943,39,1.591064607,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+red deer,artiodactyla,Cervidae,Cervus,elaphus,302,2.480006943,39,1.591064607,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+burchell's zebra,perissodactyla,Equidae,Equus,quagga,278,2.444044796,15,1.176091259,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+brown grizzly bear,carnivora,Ursidae,Ursus,arctos,274,2.437750563,15,1.176091259,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+muskox,artiodactyla,Bovidae,Ovibos,moschatus,265,2.423245874,53,1.72427587,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+manatee,sirenia,Trichechidae,Trichechus,manatus,250,2.397940009,0.7,-0.15490196,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+okapi,artiodactyla,Giraffidae,Okapia,johnstoni,238,2.376576957,10,1,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+onager,perissodactyla,Equidae,Equus,hemionus,235,2.371067862,23,1.361727836,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+pygmy hippo,artiodactyla,Hippopotamidae,Choeropsis,liberiensis,217,2.336459734,3,0.477121255,land,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+gorilla,primates,Pongidae,Gorilla,gorilla,217,2.336459734,17,1.230448921,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+donkey,perissodactyla,Equidae,Equus,africanus,205,2.311753861,23,1.361727836,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+grey seal,carnivora,Phocidae,Halichoerus,grypus,200,2.301029996,3.3,0.51851394,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+scimitar oryx,artiodactyla,Bovidae,Oryx,dammah,200,2.301029996,21,1.322219295,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+bottlenose dolphins,artiodactyla,Delphinidae,Tursiops,truncatus,197.67,2.295940762,4.05,0.607455023,aquatic,y,m,y,m,m,n
+,,,,,,,,,,,,,,,
+south-african fur seal,carnivora,Phocidae,Arctocephalus,pusillus,190,2.278753601,1.3,0.113943352,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+gnu,artiodactyla,Bovidae,Connochaetes,taurinus,177,2.247973266,19,1.278753601,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+pare david's deer,artiodactyla,Cervidae,Elaphurus,davidianus,171,2.23299611,25,1.397940009,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+southern/patagonia sea lion,carnivora,Otariidae,Otaria,bryonia,147.46,2.16867423,4.65,0.667452953,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+lion,carnivora,Felidae,Panthera,leo,145,2.161368002,17,1.230448921,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+llama,artiodactyla,Camelidae,Lama,glama,140,2.146128036,20,1.301029996,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+siberian tiger,carnivora,Felidae,Panthera,tigris,125,2.096910013,15,1.176091259,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+amazonian manatee,sirenia,Trichechidae,Trichechus,inunguis,100,2,0.75,-0.124938737,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+antarctic fur seal,carnivora,Phocidae,Arctocephalus,gazella,100,2,4.7,0.672097858,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+bighorn sheep,artiodactyla,Bovidae,Ovis,canadensis,98,1.991226076,33,1.51851394,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+addax,artiodactyla,Bovidae,Addax,nasomaculatus,92,1.963787827,26,1.414973348,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+caribou,artiodactyla,Cervidae,Rangifer,tarandus,92,1.963787827,40,1.602059991,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+mountain goat,artiodactyla,Bovidae,Oreamnos,americanus,88,1.944482672,58,1.763427994,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+tibetan bear/asian black bear,carnivora,Ursidae,Ursus,thibetanus,85,1.929418926,36,1.556302501,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+California Sea Lions,carnivora,Otariidae,Zalophus,californianus,78.6,1.895422546,6.1,0.785329835,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+California Sea Lions,carnivora,Otariidae,Zalophus,californianus,77.2,1.8876173,6.5,0.812913357,aquatic,m,n,y,m,y,n
+,,,,,,,,,,,,,,,
+harbor seal,carnivora,Phocidae,Phoca,vitulina,77,1.886490725,6,0.77815125,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+puma,carnivora,Felidae,Puma,concolor,77,1.886490725,38,1.579783597,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+hooded seal,carnivora,Phocidae,Cystophora,cristata,72,1.857332496,6.1,0.785329835,aquatic,n,n,n,m,y,n
+,,,,,,,,,,,,,,,
+mule deer,artiodactyla,Cervidae,Odocoileus,hemionus,72,1.857332496,11,1.041392685,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+harp seal,carnivora,Phocidae,Pagophilus,groenlandicus,70,1.84509804,12,1.079181246,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+human,primates,Hominidae,Homo,sapiens,70,1.84509804,15,1.176091259,land,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+alpaca,artiodactyla,Camelidae,Vicugna,pacos,68,1.832508913,15,1.176091259,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+dall's sheep,artiodactyla,Bovidae,Ovis,dalli,66,1.819543936,36,1.556302501,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+jaguar,carnivora,Felidae,Panthera,onca,63,1.799340549,9,0.954242509,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+capybara,rodentia,Caviidae,Hydrochoerus,hydrochaeris,53,1.72427587,33,1.51851394,land,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+harbor porpoise,artiodactyla,Phocoenidae,Phocoena,phocoena,52,1.716003344,8.2,0.913813852,aquatic,y,n,n,m,n,n
+,,,,,,,,,,,,,,,
+domestic sheep,artiodactyla,Bovidae,Ovis,aries,50,1.698970004,54,1.73239376,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+domestic dog,carnivora,Canidae,Canis,lupus,39,1.591064607,21,1.322219295,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+snow leopard,carnivora,Felidae,Panthera,uncia,37,1.568201724,13,1.113943352,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+blackbuck,artiodactyla,Bovidae,Antilope,cervicapra,35,1.544068044,31,1.491361694,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+hippo,artiodactyla,Hippopotamidae,Hippopotamus,amphibius,30,1.477121255,4,0.602059991,aquatic,n,n,y,m,y,n
+,,,,,,,,,,,,,,,
+mandrill,primates,Cercopithecidae,Mandrillus,sphinx,26,1.414973348,17,1.230448921,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+bottlenose dolphins,artiodactyla,Delphinidae,Tursiops,truncatus,24,1.380211242,2.4,0.380211242,aquatic,n,n,y,m,y,n
+,,,,,,,,,,,,,,,
+beaver,rodentia,Castoridae,Castor,canadensis,22,1.342422681,33,1.51851394,aquatic,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+domestic goat,artiodactyla,Bovidae,Capra,hircus,22,1.342422681,37,1.568201724,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+grey seal,carnivora,Phocidae,Halichoerus,grypus,19,1.278753601,33,1.51851394,aquatic,n,n,y,m,y,n
+,,,,,,,,,,,,,,,
+muntjac,artiodactyla,Cervidae,Muntiacus,reevesi,14,1.146128036,26,1.414973348,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+spotted-necked otter,carnivora,Mustelidae,Lutra,maculicollis,12,1.079181246,22,1.342422681,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+colobus,primates,Cercopithecidae,Colobus,guereza,12,1.079181246,15,1.176091259,land,y,n,y,m,m,n
+,,,,,,,,,,,,,,,
+african clawless otter,carnivora,Mustelidae,Aonyx,capensis,11,1.041392685,16,1.204119983,aquatic,y,n,y,m,y,n
+,,,,,,,,,,,,,,,
+river otter,carnivora,Mustelidae,Lontra,canadensis,11,1.041392685,17,1.230448921,aquatic,y,n,y,m,y,n

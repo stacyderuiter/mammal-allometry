@@ -1,0 +1,191 @@
+# Mammal Breathing Frequency
+
+## Data
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, fr-data-in}
+mammal_fr <- read_csv("data/frdata-rev.csv",
+                      show_col_types = FALSE) |>
+  janitor::remove_empty(which = 'rows')
+```
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, fr-data-rename}
+mammal_fr <- mammal_fr |>
+  rename(mass_kg = mass,
+         log10_mass = logmb,
+         breaths_per_min = fr,
+         log10_br = logfr) |>
+  rename_with(tolower) |>
+  mutate(order = str_to_title(order),
+         family = str_to_title(family),
+         genus = str_to_title(genus),
+         animal = paste(genus, species))
+```
+
+Keep only variables we will be using. And `factor()` "chr" variables.
+
+```{r, fr-data-select}
+mammal_fr <- mammal_fr |>
+  dplyr::select(order,
+                family,
+                genus,
+                species, 
+                mass_kg,
+                log10_mass,
+                log10_br,
+                habitat,
+                animal
+  ) |>
+  mutate(across(where(is.character), factor)) |>
+  arrange(order, family, genus, species)
+```
+
+### Viz
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, fr-create-plot-no-display}
+my_scatter_plot <- gf_point(log10_br ~ log10_mass | habitat,
+         color = ~order,
+         text = ~animal,
+         # size = ~parse_number(n_animals),
+         data = mammal_fr,
+         alpha = 0.5) |>
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) |>
+  gf_theme(scale_color_viridis_d('Order')) |>
+  gf_labs(x = 'Log10(Mass (kg))',
+          y = 'Log10(fR (breaths/min))') 
+```
+
+```{r, fr-display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r, fr-disply-interactive, warning = FALSE, message = FALSE}
+plotly::ggplotly(my_scatter_plot) |>
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+Notes: If we wanted to use for web or publication, we would refine. We can edit what info is shown when you hover over a data point, change color scheme, legend, etc.
+
+
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family/genus/species, expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
+
+```{r, fr-fit-re}
+re_model <- glmmTMB(log10_br ~ log10_mass * habitat + (1 | order/family/genus),
+                 data = mammal_fr)
+summary(re_model)
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+names(re_anova_results)[3] <- 'p'
+pander(re_anova_results)
+```
+
+According to this model, the data provide strong evidence of mass and habitat being associated with different breathing frequency (p = `r signif(re_anova_results$p[1], digits = 2)` and p = `r signif(re_anova_results$p[2], digits = 2)`), but not of an interaction between habitat and mass (p = `r signif(re_anova_results$p[3], digits = 2)`).
+
+### Model Assessment
+
+```{r, fr-assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_fr <- mammal_fr |>
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+
+# save fitted model and data
+saveRDS(mammal_fr, 'fitted-models/fr-data.RDS')
+saveRDS(re_model, 'fitted-models/fr-re-model.RDS')
+
+
+gf_point(re_resids ~ re_ind_fitted, data = mammal_fr)
+acf(resid(re_model))
+#gf_acf(~re_model)
+gf_dhistogram(~re_resids, data = mammal_fr) |>
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+```{r, fr-predict-re}
+mammal_fr <- mammal_fr |>
+  mutate(Habitat = stringr::str_to_sentence(habitat))
+
+re_preds <- gf_point(10^log10_br ~ 10^log10_mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_fr) |> 
+  gf_line(10^re_ave_fitted ~ 10^log10_mass,
+         color = ~Habitat,
+         data = mammal_fr,
+         text = ~Habitat) |>
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10_mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) |> 
+  gf_labs(x = 'Body Mass (kg)', y = 'Breathing frequency\n(breaths/minute)') |> 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  gf_theme(scale_fill_manual(values = my_colors)) |>
+  gf_refine(scale_x_continuous(trans = 'log10',
+                              labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)))
+
+# For breathing frequency, terrestrial (Stahl 1967): fR (breaths/minute) = 53.5 * body mass ^-0.26
+# For breathing frequency, marine (Mortola, 2006): fR (breaths/minute) = 33 * body mass ^-0.42
+
+pub_models <- data.frame(mass = seq(from = 0.001, by = 10, to = 70000)) |> # mass = seq(from = 0.015, by = 0.1, to = 42000)) |>
+  mutate(fr_stahl = 53.5*mass^-0.26,
+         fr_mortola = 33*mass^-0.42)
+
+re_preds <- re_preds |>
+  gf_line(fr_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') |>
+  gf_line(fr_mortola ~ mass, data = pub_models, color = 'black', linetype = 'dashed',
+          text = ~'Mortola') |>
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.9),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
+```
+
+```{r, fig.cap = 'Observed and predicted breathing frequency as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967) for terrestrial species, and dashed black line on Mortola (2006) for marine species.', fig.width = 6.5, fig.height = 3.5}
+re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
+```
+
+```{r, fr-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+```{r, fr-fitted-vs-data}
+gf_point(log10_br ~ re_ind_fitted, data = mammal_fr,
+         alpha = 0.1) |>
+  gf_labs(y = 'Observed log10(fr)',
+          x = 'Model-predicted, Genus-specific log10(fr)',
+          title = 'Mixed-effects Model (RE of Order/Family/Genus)') |>
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+Note that out model tends to overestimate the breathing frequency for animals with lower breath rates, somewhat systematically, after accounting for effects of order/family/genus and habitat.
+
