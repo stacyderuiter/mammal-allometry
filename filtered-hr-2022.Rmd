@@ -1,0 +1,186 @@
+# Mammal Heart Rates
+
+## Data
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, hr-data-in}
+mammal_hr <- read_csv("data/fhdata-filter.csv",
+                       show_col_types = FALSE) |>
+  janitor::remove_empty(which = 'rows')
+```
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, hr-data-rename}
+mammal_hr <- mammal_hr |>
+  rename(mass_kg = mass,
+        log10_mass = logmb,
+        heart_rate_bpm = fh,
+        log10_hr = logfh) |>
+  rename_with(tolower) |>
+  mutate(order = str_to_title(order),
+         family = str_to_title(family),
+         genus = str_to_title(genus),
+         animal = paste(genus, species))
+```
+
+Keep only variables we will be using. And "factor" "chr" variables.
+
+```{r, hr-data-select}
+mammal_hr <- mammal_hr |>
+  dplyr::select(order,
+                family,
+                genus,
+                species, 
+                mass_kg,
+                log10_mass,
+                log10_hr,
+                habitat,
+                animal
+         ) |>
+  mutate(across(where(is.character), factor)) |>
+  arrange(order, family, genus, species)
+```
+
+### Viz
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, hr-create-plot-no-display}
+my_scatter_plot <- gf_point(log10_hr ~ log10_mass | habitat,
+         color = ~order,
+         text = ~animal,
+         # size = ~parse_number(n_animals),
+         data = mammal_hr,
+         alpha = 0.5) |>
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) |>
+  gf_theme(scale_color_viridis_d('Order')) |>
+  gf_labs(x = 'Log10(fH (beats/min))',
+          y = 'Log10(BMR (kcal/day))') 
+```
+
+```{r, hr-display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r, hr-disply-interactive, warning = FALSE, message = FALSE}
+plotly::ggplotly(my_scatter_plot) |>
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+Notes: If we wanted to use for web or publication, we would refine. We can edit what info is shown when you hover over a data point, change color scheme, legend, etc.
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family, not having enough observations per genus and species to fit those random effects. We are thus expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
+
+```{r, hr-fit-re}
+re_model <- glmmTMB(log10_hr ~ log10_mass * habitat + (1 | order/family),
+                 data = mammal_hr)
+summary(re_model)
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+pander(re_anova_results)
+```
+
+According to this model, the data don't provide any evidence of an association between habitat and heart rate, after accounting for effect of mass.
+
+### Model Assessment
+
+Graphical checks below don't provide evidence of any problems with the residual normality, residual independence, constant residual variance, and linearity conditions that have to be met for this model to be appropriate for the data.
+
+```{r, hr-assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_hr <- mammal_hr |>
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+
+# save fitted model and data
+saveRDS(mammal_hr, 'fitted-models/hr-data-filter.RDS')
+saveRDS(re_model, 'fitted-models/hr-re-model-filter.RDS')
+
+gf_point(re_resids ~ re_ind_fitted, data = mammal_hr)
+acf(resid(re_model))
+#gf_acf(~re_model)
+gf_dhistogram(~re_resids, data = mammal_hr, bins = 9) |>
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+
+```{r, hr-predict-re-2}
+mammal_hr <- mammal_hr |>
+  mutate(Habitat = stringr::str_to_sentence(habitat))
+
+re_preds <- gf_point(10^log10_hr ~ 10^log10_mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_hr) |> 
+  gf_line(10^re_ave_fitted ~ 10^log10_mass,
+         color = ~Habitat,
+         data = mammal_hr,
+         text = ~Habitat) |>
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10_mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) |> 
+  gf_labs(x = 'Body Mass (kg)', y = 'Heart Rate (beats/minute)') |> 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  gf_theme(scale_fill_manual(values = my_colors)) |>
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)
+                               ),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))
+            )
+
+# For heart rate (Stahl 1967): fH (beats/minute)= 241 * body mass (kg) ^-0.25
+pub_models <- data.frame(mass = seq(from = 9, by = 10, to = 10000)) |> # data.frame(mass = seq(from = 0.009, by = 0.1, to = 70000)) |>
+  mutate(hr_stahl = 241*mass^-0.25)
+
+re_preds <- re_preds |>
+  gf_line(hr_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') |>
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.9),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
+```
+
+```{r, fig.cap = 'Observed and predicted heart rate as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967).', fig.width = 6.5, fig.height = 3.5}
+re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
+```
+
+```{r, hr-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+```{r, hr-predicted-vs-obs}
+gf_point(log10_hr ~ re_ind_fitted, data = mammal_hr,
+         alpha = 0.1) |>
+  gf_labs(y = 'Observed log10(fH)',
+          x = 'Model-predicted, Family-specific log10(fH)',
+          title = 'Mixed-effects Model (RE of Order/Family)') |>
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+Again, we perhaps tend slightly toward overestimation for the lower heart rates and the opposite for the highest ones.

@@ -1,0 +1,16 @@
+name,order,family,genus,species,mass,logmb,sv,logsv,habitat,adult,fasted,resting,tnz,nonrep,sedated,
+gray whale,artiodactyla,Balaenopteridae,Eschrichtius,robustus,4500,3.653212514,7150,3.854306042,aquatic,y,n,y,m,y,m,Smith and Wahrenbrock 1974
+african elephant,proboscidea,Elephantidae,Loxodonta,africana,4080,3.610660163,5220,3.717670503,land,y,n,y,m,m,n,"Seymour and Blaylock, 2000"
+asian elephant,proboscidea,Elephantidae,Elephas,maximus,2960,3.471291711,3710,3.56937391,land,y,n,y,m,m,n,"Seymour and Blaylock, 2000"
+giraffe,artiodactyla,Giraffidae,Giraffa,camelopardalis,651,2.813580989,700,2.84509804,land,y,n,y,m,m,n,"Seymour and Blaylock, 2000"
+false killer whale,artiodactyla,Delphinidae,Pseudorca,crassidens,520,2.716003344,634,2.802089258,aquatic,y,n,y,m,y,n,"Fahlman et al., 2020"
+horse,perissodactyla,Equidae,Equus,caballus,453,2.656098202,1404.3,3.147459896,land,y,n,y,m,y,n,"Jones et al., 1989"
+cow,artiodactyla,Bovidae,Bos,taurus,449,2.652246341,691.46,2.839767062,land,y,n,y,m,y,n,"Jones et al., 1989"
+llama,artiodactyla,Camelidae,Lama,glama,115,2.06069784,159.5,2.202760687,land,y,y,y,m,m,n,"Gavier et al., 1988"
+pig,artiodactyla,Suidae,Sus,scrofa,102,2.008600172,94,1.973127854,land,y,m,m,m,m,m,"Holt, Rhode, and Kines, 1968"
+dolphin,artiodactyla,Delphinidae,Tursiops,truncatus,182.3333333,2.260866072,157.5,2.197280558,aquatic,y,n,y,m,y,n,"Fahlman et al., 2020; Fahlman et al., 2019; Miedler et al., 2015"
+human,primates,Hominidae,Homo,sapiens,73,1.86332286,80,1.903089987,land,y,n,y,m,y,n,"Altman and Dittmer, 1971"
+sheep,artiodactyla,Bovidae,Ovis,aries,47.5,1.67669361,56.7,1.753583059,land,y,m,m,m,m,n,"Holt, Rhode, and Kines, 1968"
+california sea lion,carnivora,Otariidae,Zalophus,californianus,36,1.556302501,72.9666667,1.863124507,aquatic,y,n,y,m,m,n,"Ponganis, Kooyman, and Zornow, 1991"
+goat,artiodactyla,Bovidae,Capra,hircus,31.2,1.494154594,50.2,1.700703717,land,y,m,m,m,m,m,"Seymour and Blaylock, 2000"
+dog,carnivora,Canidae,Canis,lupus,24.8,1.394451681,46,1.662757832,land,y,n,y,m,y,n,"Stray-Gunderson et al., 1986"

@@ -1,0 +1,189 @@
+# Mammal Tidal Volume
+
+## Data
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, vt-data-in}
+mammal_vt <- read_csv("data/vtdata-filter.csv",
+                       show_col_types = FALSE)  |>
+  janitor::remove_empty(which = 'rows')
+```
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, vt-data-rename}
+mammal_vt <- mammal_vt |>
+  rename(mass_kg = mass,
+         log10_mass = logmb,
+         tidal_volume_ml = vt,
+         log10_tv = logvt) |>
+  rename_with(tolower) |>
+  mutate(order = str_to_title(order),
+         family = str_to_title(family),
+         genus = str_to_title(genus),
+         animal = paste(genus, species))
+```
+
+Keep only variables we will be using. And `factor()` "chr" variables.
+
+```{r, vt-data-select}
+mammal_vt <- mammal_vt |>
+  dplyr::select(order,
+                family,
+                genus,
+                species, 
+                mass_kg,
+                log10_mass,
+                log10_tv,
+                habitat,
+                animal
+         ) |>
+  mutate(across(where(is.character), factor)) |>
+  arrange(order, family, genus, species)
+```
+
+### Viz
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, vt-create-plot-no-display}
+my_scatter_plot <- gf_point(log10_tv ~ log10_mass | habitat,
+         color = ~order,
+         text = ~animal,
+         # size = ~parse_number(n_animals),
+         data = mammal_vt,
+         alpha = 0.5) |>
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) |>
+  gf_theme(scale_color_viridis_d('Order')) |>
+  gf_labs(x = 'Log10(Mass (kg))',
+          y = 'Log10(Vt (ml))') 
+```
+
+```{r, vt-display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r, vt-display-interactive}
+plotly::ggplotly(my_scatter_plot) |>
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family/genus (not having enough data to estimate genus/species effects), expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are required to be "further" apart than any other two.
+
+```{r, vt-fit-re}
+re_model <- glmmTMB(log10_tv ~ log10_mass * habitat + (1 | order/family),
+                 data = mammal_vt)
+
+summary(re_model)
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+names(re_anova_results)[3] <- 'p'
+pander(re_anova_results)
+```
+
+According to this model, the data provide very strong evidence that mass and habitat are associated with tidal volume (p = `r signif(re_anova_results$p[1], digits = 2)` and p = `r signif(re_anova_results$p[2], digits = 2)`), and moderate evidence of an interaction between body mass and habitat (p = `r signif(re_anova_results$p[3], digits = 2)`).
+
+### Model Assessment
+
+Graphical checks below don't provide evidence of any problems with the residual normality, residual independence, constant residual variance, and linearity conditions that have to be met for this model to be appropriate for the data.
+
+```{r, vt-assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_vt <- mammal_vt |>
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+
+# save fitted model and data
+saveRDS(mammal_vt, 'fitted-models/vt-data-filter.RDS')
+saveRDS(re_model, 'fitted-models/vt-re-model-filter.RDS')
+
+
+gf_point(re_resids ~ re_ind_fitted, data = mammal_vt)
+acf(resid(re_model))
+#gf_acf(~re_model)
+gf_dhistogram(~re_resids, data = mammal_vt, bins = 7) |>
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+```{r, vt-predict-re}
+mammal_vt <- mammal_vt |>
+  mutate(Habitat = stringr::str_to_sentence(habitat))
+
+re_preds <- gf_point(10^log10_tv ~ 10^log10_mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_vt) |> 
+  gf_line(10^re_ave_fitted ~ 10^log10_mass,
+         color = ~Habitat,
+         data = mammal_vt,
+         text = ~Habitat) |>
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10_mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) |> 
+  gf_labs(x = 'Body Mass (kg)', y = 'Tidal Volume (mL)') |> 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  gf_theme(scale_fill_manual(values = my_colors)) |>
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)))
+
+# For tidal volume, terrestrial (Stahl 1967): SV (ml) = 7.69 * body mass^1.04 
+# For tidal volume, marine (Fahlman 2020, sea lion/cetacean papers): SV (l) = 0.0372 * body mass^0.97 
+
+pub_models <- data.frame(mass = seq(from = 9, by = 10, to = 10000)) |> # data.frame(mass = seq(from = 0.008, by = 0.1, to = 5200)) |>
+  mutate(vt_stahl = 7.69 * mass^1.04,
+         vt_fahlman = 37.2 * mass^0.97)
+
+re_preds <- re_preds |>
+  gf_line(vt_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') |>
+  gf_line(vt_fahlman ~ mass, data = pub_models, color = 'black',
+          linetype = 'dashed', text = ~'Fahlman') |>
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
+```
+
+```{r, vt-re-predictions-interactive, fig.cap = 'Observed and predicted tidal volume as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals for expected (average) values. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967) and black dashed line on Fahlman (2020).', fig.width = 6.5, fig.height = 3.5}
+re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
+```
+
+```{r, vt-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+
+```{r, vt-pred-vs-obs}
+gf_point(log10_tv ~ re_ind_fitted, data = mammal_vt,
+         alpha = 0.1) |>
+  gf_labs(y = 'Observed log10(Vt)',
+          x = 'Model-predicted, Order-and-Family-specific log10(VT)',
+          title = 'Mixed-effects Model (RE of Order/family)') |>
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```

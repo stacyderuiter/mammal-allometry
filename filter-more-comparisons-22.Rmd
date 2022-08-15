@@ -1,0 +1,481 @@
+---
+title: "Supplemental Materials"
+author: "He et al."
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+---
+
+<!-- ```{r setup, include=FALSE} -->
+<!-- require(tidyverse) # for data wrangling -->
+<!-- require(mosaic) # for ggformula graphics -->
+<!-- require(plotly) # for interactive graphs -->
+<!-- # require(evomap) # for PGLS ancova/CI/PIs -->
+<!-- require(ape) # for trees -->
+<!-- require(mice) # for pooling estimated from fitted pgls models -->
+<!-- require(broom.mixed) # for pulling results out of gls fitted model objects -->
+<!-- require(carEx) # for ANOVA for pgls -->
+<!-- # to install carEx: -->
+<!-- # install.packages("carEx", repos="http://R-Forge.R-project.org") -->
+<!-- # to install evomap run: -->
+<!-- # remotes::install_github('JeroenSmaers/evomap') -->
+<!-- # require(MuMIn) # don't think we are using (for dredge, AIC/BIC comparisons) -->
+<!-- require(lme4) -->
+<!-- require(car)  #  needed for Anova(), avPlots, vif functions -->
+<!-- require(MuMIn)  #  needed for dredge function, pgls utilities? -->
+<!-- require(sjPlot) # for tables of model summary info -->
+<!-- require(pander) # for table of Anova() results -->
+<!-- require(nlme) # for gls() -->
+<!-- # require(multcomp) -->
+<!-- # require(nlstools) -->
+<!-- require(ggeffects) # for plotting marginal model predictions -->
+<!-- require(glmmTMB) # for fitting RE models.  -->
+<!-- # source("utils/augPairs.R")  #  needed for aug.pairs function -->
+<!-- # source("utils/MuMInUtilities.R")  #  needed for MuMIn.shrink.fit and MuMIn.shrink.resid -->
+<!-- # source("utils/qqnormWithBounds.R")  -->
+<!-- # source("PGLS model/broom_gls.R") -->
+<!-- knitr::opts_chunk$set(echo = TRUE, message = FALSE,  -->
+<!--                       warning = FALSE, cache = TRUE, -->
+<!--                       fig.path = 'figures/') -->
+<!-- theme_set(theme_minimal(base_size = 14)) -->
+<!-- my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3] -->
+
+<!-- source('utils/gls-utils.R') -->
+<!-- source('utils/Anova.mira.R') -->
+<!-- ``` -->
+
+# Additional Predictions (Difference in Derived Quantities by Habitat)
+
+## Cardiac Output
+
+Cardiac output is the product of heart rate (`hr`) and stroke volume (`sv`).
+
+We will use a parametric bootstrap to make predictions of cardiac output as a function of log10(body mass) and habitat based on our random-effect models for `hr` and `sv`. This time, we focus on the *difference* in predicted cardiac output for (hypothetical) pairs of species of a range of masses that differ only in their habitat.
+
+```{r, erase-junk}
+rm(list = ls())
+my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
+```
+
+```{r, set-n-boot-diff}
+n_boot <- 1000
+```
+
+We will make sets of many (`r n_boot`) predictions for each of the species that occur in both the `hr` and `sv` data sets.
+
+```{r find_cardiac-species-diff}
+# note NAMES HAVE TO BE SAME as passed to glmmTMB() when models were fitted (geesh)
+mammal_hr <- readRDS('fitted-models/hr-data-filter.RDS')
+hr_mod <- readRDS('fitted-models/hr-re-model-filter.RDS')
+mammal_sv <- readRDS('fitted-models/sv-data-filter.RDS')
+sv_mod <- readRDS('fitted-models/sv-re-model-filter.RDS')
+
+```
+
+Make dataset for which to make predictions, pairs of hypothetical species that range in size from about 10 to 5000 kg.
+
+```{r, pred-data-diff}
+cardiac_hr <- cardiac_sv <- data.frame(numb = c(1:100),
+                                       mass_kg = c(seq(from = 10, to = 5000, by = 100),
+                                                   seq(from = 10, to = 5000, by = 100)))
+
+cardiac_hr <- cardiac_hr |>
+  mutate(log10_mass = log10(mass_kg),
+         habitat = c(rep('aquatic', 50),
+                     rep('land', 50)),
+         animal = sample(mammal_hr$animal, size = 100, replace = TRUE),
+         order = sample(mammal_hr$order, size = 100, replace = TRUE),
+         family = sample(mammal_hr$family, size = 100, replace = TRUE),
+         genus = sample(mammal_hr$genus, size = 100, replace = TRUE),
+         species = sample(mammal_hr$species, size = 100, replace = TRUE),
+         log10_fr = 0) |>
+  dplyr::select(numb, animal, order, family, genus, species, log10_mass, log10_fr, habitat)
+
+cardiac_sv <- cardiac_sv |>
+  mutate(log10_mass = log10(mass_kg),
+         habitat = c(rep('aquatic', 50),
+                     rep('land', 50)),
+         order = sample(mammal_sv$order, size = 100, replace = TRUE),
+         family = sample(mammal_sv$family, size = 100, replace = TRUE),
+         genus = sample(mammal_sv$genus, size = 100, replace = TRUE),
+         species = sample(mammal_sv$species, size = 100, replace = TRUE),
+         log10_sv = 0) |>
+  dplyr::select(numb, log10_sv, log10_mass, habitat, order, family, genus, species) 
+```
+
+For each row of the dataset, make a set of `r n_boot` model predictions of cardiac output. These predictions will include uncertainty in the model parameters (intercept and slopes) as well as variation attributed to order/genus/species. (Residual variation is  not included). The mass estimates are different in the different datasets; here we use the mass estimate from the dataset to which the model (`hr` or `sv`) was originally fitted.
+
+First we define custom functions to make the predictions
+
+```{r}
+predict_hr <- function(.){
+  predict(.,
+          newdata = cardiac_hr,
+          re.form = NA,
+          type = 'response')
+}
+
+predict_sv <- function(.){
+  predict(.,
+         newdata = cardiac_sv,
+           re.form = NA,
+           type = 'response',
+         allow.new.levels = TRUE)
+  }
+```
+
+Do the bootstrap(s)
+
+```{r, do-boot-hr-diff}
+if (!file.exists('fitted-models/hr_habitat_boot_22-filter.RDS')){
+hr_boot <- bootMer(hr_mod, 
+                   FUN = predict_hr,
+                   nsim = n_boot,
+                   re.form = NA,
+                   type = 'parametric'
+                   )
+
+saveRDS(hr_boot, 'fitted-models/hr_habitat_boot_22-filter.RDS')
+}else{
+  hr_boot <- readRDS('fitted-models/hr_habitat_boot_22-filter.RDS')
+}
+```
+
+```{r, do-boot-sv-diff}
+if (!file.exists('fitted-models/sv_habitat_boot_22-filter.RDS')){
+sv_boot <- bootMer(sv_mod, 
+                   FUN = predict_sv,
+                   nsim = n_boot,
+                   re.form = NA,
+                   type = 'parametric')
+saveRDS(sv_boot, 'fitted-models/sv_habitat_boot_22-filter.RDS')
+}else{
+  sv_boot <- readRDS('fitted-models/sv_habitat_boot-filter.RDS')
+}
+```
+
+Add boot results to datasets, combine to one dataset, and compute predicted cardiac output (and its median and 95% bootstrap CI):
+
+```{r}
+cardiac_hr <- cardiac_hr |>
+  mutate(boot_pred_hr = unlist(apply(t(hr_boot$t), 1, list), recursive = FALSE),
+         across(where(is.factor), as.character))
+
+cardiac_sv <- cardiac_sv |>
+  mutate(boot_pred_sv = unlist(apply(t(sv_boot$t), 1, list), recursive = FALSE),
+         across(where(is.factor), as.character)) 
+  
+cardiac_preds <- inner_join(cardiac_hr, cardiac_sv,
+                         by = c("numb", "habitat")) |>
+  mutate(boot_pred_cardiac = map2(boot_pred_hr, boot_pred_sv, function(.x, .y) mapply(prod, 10^.x, 10^.y))) |>
+  mutate(boot_median_cardiac = map_dbl(boot_pred_cardiac, median, na.rm = TRUE),
+         boot_lo = map_dbl(boot_pred_cardiac, quantile, probs = 0.025, na.rm = TRUE),
+         boot_hi = map_dbl(boot_pred_cardiac, quantile, probs = 0.975, na.rm = TRUE))
+# units: ml/stroke * beats/min
+```
+
+plot results
+
+```{r, cardiac-diff-vs-mass-natural-scale}
+cardiac_mass <- gf_point(boot_median_cardiac ~ log10_mass.x, data = cardiac_preds,
+         color = ~habitat) |>
+  gf_errorbar(boot_lo + boot_hi ~ log10_mass.x, data = cardiac_preds,
+              color = ~habitat) |>
+  gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
+          y = 'Predicted Cardiac Output (mL/min)',
+          x = 'Body Mass (kg)') |>
+  gf_theme(scale_color_manual(values = my_colors)) 
+
+ggplotly(cardiac_mass, tooltip = '') 
+```
+
+```{r, cardiac-diff-mass-image, fig.show = 'hide', dev = 'jpeg'}
+cardiac_mass
+```
+
+```{r, cardiac-diff-vs-mass-log-scale}
+cardiac_mass_log <- gf_point(boot_median_cardiac ~ 10^log10_mass.x, data = cardiac_preds,
+         color = ~habitat,
+         text = ~animal) |>
+  gf_errorbar(boot_lo + boot_hi ~ 10^log10_mass.x, data = cardiac_preds,
+              color = ~habitat) |>
+  gf_lims(x = c(10, 10000)) |>
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  gf_refine(scale_y_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
+          y = 'Predicted Cardiac Output (mL/min)',
+          x = 'Body Mass (kg)') |>
+  gf_theme(scale_color_manual(values = my_colors)) 
+  
+
+ggplotly(cardiac_mass_log, tooltip = 'text')
+```
+
+```{r, cardiac-diff-mass-log-image, fig.show = 'hide', dev = 'jpeg'}
+cardiac_mass_log
+```
+
+### Cardiac Output: Terrestrial vs. Aquatic
+We're also interested in judging whether the predicted cardiac output differs between terrestrial and aquatic species. For this, we may better consider the *difference* between (hypothetical) species that differ only in habitat.
+
+```{r}
+cardiac_diffs <- cardiac_preds |>
+  select(log10_mass.x, habitat, boot_pred_hr, boot_pred_sv, boot_pred_cardiac) |>
+  pivot_wider(names_from = 'habitat',
+              values_from = c('boot_pred_cardiac', 'boot_pred_sv', 'boot_pred_hr')) |>
+  mutate(boot_diff_cardiac_tma = purrr::map2(boot_pred_cardiac_land, 
+                                                boot_pred_cardiac_aquatic,
+                                                ~ .x - .y)) |>
+  mutate(boot_median_cardiac_diff = map_dbl(boot_diff_cardiac_tma, median, na.rm = TRUE),
+         boot_cardiac_diff_lo = map_dbl(boot_diff_cardiac_tma, quantile, probs = 0.025, na.rm = TRUE),
+         boot_cardiac_diff_hi = map_dbl(boot_diff_cardiac_tma, quantile, probs = 0.975, na.rm = TRUE))
+```
+
+```{r, cardiac-difference}
+require(ggallin)
+gf_line(boot_median_cardiac_diff ~ 10^log10_mass.x,
+        data = cardiac_diffs) |>
+  gf_ribbon(boot_cardiac_diff_lo + boot_cardiac_diff_hi ~ 10^log10_mass.x) |>
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  # gf_refine(scale_y_continuous(trans=pseudolog10_trans,
+  #                              labels = scales::label_comma(accuracy = 0.001,
+  #                                                           drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Cardiac Output Difference\nTerrestrial minus Aquatic',
+          y = 'Cardiac Output Difference (mL/min)',
+          x = 'Body Mass (kg)') 
+```
+
+```{r, cardiac-output-difference-log-scale}
+gf_line(boot_median_cardiac_diff ~ 10^log10_mass.x,
+        data = cardiac_diffs) |>
+  gf_ribbon(boot_cardiac_diff_lo + boot_cardiac_diff_hi ~ 10^log10_mass.x) |>
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  gf_refine(scale_y_continuous(trans=pseudolog10_trans,
+                               breaks = c(-500000, -50000, -5000, -500, -50, 0, 50, 500, 5000, 50000, 500000),
+                               labels = scales::label_comma(accuracy = 0.01,
+                                                            drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Cardiac Output Difference\nTerrestrial minus Aquatic',
+          y = 'Cardiac Output Difference (mL/min)',
+          x = 'Body Mass (kg)') 
+```
+
+
+## Total Ventilation
+
+Total ventilation is the product of breathing rate (`fr`) and tidal volume (`vt`).
+
+We will use a parametric bootstrap to make predictions of total ventilation as a function of log10(body mass) and habitat based on our random-effect models for `fr` and `vt`.
+
+We will make sets of many (`r n_boot`) predictions for each of the species that occur in both the `fr` and `vt` data sets.
+
+```{r}
+# note NAMES HAVE TO BE SAME as passed to glmmTMB() when models were fitted (geesh)
+mammal_fr <- readRDS('fitted-models/fr-data-filter.RDS')
+fr_mod <- readRDS('fitted-models/fr-re-model-filter.RDS')
+mammal_vt <- readRDS('fitted-models/vt-data-filter.RDS')
+vt_mod <- readRDS('fitted-models/vt-re-model-filter.RDS')
+```
+
+Make datasets for which to make predictions.
+
+```{r, vent-pred-data-diff}
+vent_fr <- vent_vt <- data.frame(numb = c(1:1182),
+                                       mass_kg = c(seq(from = 0.1, to = 100, by = 1),
+                                                   seq(from = 100, to = 5000, by = 10),
+                                                   seq(from = 0.1, to = 100, by = 1),
+                                                   seq(from = 100, to = 5000, by = 10)))
+
+vent_fr <- vent_fr |>
+  mutate(log10_mass = log10(mass_kg),
+         habitat = c(rep('aquatic', 591),
+                     rep('land', 591)),
+         animal = sample(mammal_fr$animal, size = 1182, replace = TRUE),
+         order = sample(mammal_fr$order, size = 1182, replace = TRUE),
+         family = sample(mammal_fr$family, size = 1182, replace = TRUE),
+         genus = sample(mammal_fr$genus, size = 1182, replace = TRUE),
+         species = sample(mammal_fr$species, size = 1182, replace = TRUE),
+         log10_fr = 0) |>
+  dplyr::select(numb, order, family, genus, species, log10_mass, log10_fr, habitat)
+
+vent_vt <- vent_vt |>
+  mutate(log10_mass = log10(mass_kg),
+         habitat = c(rep('aquatic', 591),
+                     rep('land', 591)),
+         order = sample(mammal_vt$order, size = 1182, replace = TRUE),
+         family = sample(mammal_vt$family, size = 1182, replace = TRUE),
+         genus = sample(mammal_vt$genus, size = 1182, replace = TRUE),
+         species = sample(mammal_vt$species, size = 1182, replace = TRUE),
+         log10_sv = 0) |>
+  dplyr::select(numb, log10_sv, log10_mass, habitat, order, family, genus, species) 
+
+```
+
+For each row of the dataset, make a set of `r n_boot` model predictions of ventilation. These predictions will include uncertainty in the model parameters (intercept and slopes) as well as variation attributed to order/genus/species. (Residual variation is  not included). The mass estimates are different in the different datasets; here we use the mass estimate from the dataset to which the model (`fr` or `vt`) was originally fitted.
+
+First we define custom functions to make the predictions
+
+```{r, vent-pred-funs-diff}
+predict_fr <- function(.){
+  predict(.,
+          newdata = vent_fr,
+          re.form = NA,
+          type = 'response')
+}
+
+predict_vt <- function(.){
+  predict(.,
+          newdata = vent_vt,
+          re.form = NA,
+          type = 'response')
+}
+```
+
+Do the bootstrap(s)
+
+```{r, do-boot-fr-diff}
+if (!file.exists('fitted-models/fr_boot-diff_22-filter.RDS')){
+fr_boot <- bootMer(fr_mod, 
+                   FUN = predict_fr,
+                   nsim = n_boot,
+                   re.form = NULL,
+                   type = 'parametric'
+                   )
+
+saveRDS(fr_boot, 'fitted-models/fr_boot-diff_22-filter.RDS')
+}else{
+  fr_boot <- readRDS('fitted-models/fr_boot-diff_22-filter.RDS')
+}
+```
+
+```{r, do-boot-vt-diff}
+if (!file.exists('fitted-models/vt_boot-diff_22-filter.RDS')){
+vt_boot <- bootMer(vt_mod, 
+                   FUN = predict_vt,
+                   nsim = n_boot,
+                   re.form = NULL,
+                   type = 'parametric')
+saveRDS(vt_boot, 'fitted-models/vt_boot-diff_22-filter.RDS')
+}else{
+  vt_boot <- readRDS('fitted-models/vt_boot-diff_22-filter.RDS')
+}
+```
+
+Add boot results to datasets, combine to one dataset, and compute predicted ventilation (and its median and 95% bootstrap CI):
+
+```{r, vent-boot-to-df-diff}
+vent_fr <- vent_fr |>
+  mutate(boot_pred_fr = unlist(apply(t(fr_boot$t), 1, list), recursive = FALSE))
+
+vent_vt <- vent_vt |>
+  mutate(boot_pred_vt = unlist(apply(t(vt_boot$t), 1, list), recursive = FALSE))
+  
+vent_preds <- inner_join(vent_fr, vent_vt,
+                         by = c('numb', 'habitat')) |>
+  mutate(boot_pred_vent = map2(boot_pred_fr, boot_pred_vt, function(.x, .y) mapply(prod, 10^.x, 10^.y))) |>
+  mutate(boot_median_vent = map_dbl(boot_pred_vent, median, na.rm = TRUE),
+         boot_lo = map_dbl(boot_pred_vent, quantile, probs = 0.025, na.rm = TRUE),
+         boot_hi = map_dbl(boot_pred_vent, quantile, probs = 0.975, na.rm = TRUE))
+# units: breaths/minute (?) * mL / breath ---> mL/min
+```
+
+plot results
+
+```{r, vent-vs-mass-habitat-natural-scale}
+vent_mass <- gf_point(boot_median_vent ~ 10^log10_mass.x, data = vent_preds,
+         color = ~habitat) |>
+  gf_errorbar(boot_lo + boot_hi ~ 10^log10_mass.x, data = vent_preds,
+              color = ~habitat) |>
+  gf_labs(title = 'Expected Ventilation',
+          y = 'Predicted Ventilation (mL/min)',
+          x = 'Body Mass (kg)') |>
+  gf_theme(scale_color_manual(values = my_colors)) 
+
+ggplotly(vent_mass)
+```
+
+```{r, vent-mass-habitat-image, fig.show = 'hide', dev = 'jpeg'}
+vent_mass
+```
+
+```{r, vent-vs-mass-habitat-log-scale}
+vent_mass_log <- gf_point(boot_median_vent ~ 10^log10_mass.x, data = vent_preds,
+         color = ~habitat) |>
+  gf_errorbar(boot_lo + boot_hi ~ 10^log10_mass.x, data = vent_preds,
+              color = ~habitat)|>
+  gf_lims(x = c(10, 10000)) |>
+  gf_refine(scale_x_log10(#trans = 'log10',
+                              labels = scales::label_comma(accuracy = 0.001,
+                                                           drop0trailing = TRUE)),
+            scale_y_log10(labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Ventilation',
+          y = 'Predicted Ventilation (mL/min)',
+          x = 'Body Mass (kg)') |>
+  gf_theme(scale_color_manual(values = my_colors)) 
+
+ggplotly(vent_mass_log, tooltip = 'text')
+```
+
+```{r, vent-mass-habitat-log-image, fig.show = 'hide', dev = 'jpeg'}
+vent_mass_log
+```
+
+
+### Ventilation: Terrestrial vs. Aquatic
+We're also interested in judging whether the predicted ventilation differs between terrestrial and aquatic species. For this, we may better consider the *difference* between (hypothetical) species that differ only in habitat.
+
+```{r}
+vent_diffs <- vent_preds |>
+  select(log10_mass.x, habitat, boot_pred_fr, boot_pred_vt, boot_pred_vent) |>
+  pivot_wider(names_from = 'habitat',
+              values_from = c('boot_pred_vent', 'boot_pred_fr', 'boot_pred_vt')) |>
+  mutate(boot_diff_vent_tma = purrr::map2(boot_pred_vent_land, 
+                                                boot_pred_vent_aquatic,
+                                                ~ .x - .y)) |>
+  mutate(boot_median_vent_diff = map_dbl(boot_diff_vent_tma, median, na.rm = TRUE),
+         boot_vent_diff_lo = map_dbl(boot_diff_vent_tma, quantile, probs = 0.025, na.rm = TRUE),
+         boot_vent_diff_hi = map_dbl(boot_diff_vent_tma, quantile, probs = 0.975, na.rm = TRUE))
+```
+
+```{r, vent-difference}
+require(ggallin)
+gf_line(boot_median_vent_diff ~ 10^log10_mass.x,
+        data = vent_diffs) |>
+  gf_ribbon(boot_vent_diff_lo + boot_vent_diff_hi ~ 10^log10_mass.x) |>
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  # gf_refine(scale_y_continuous(trans=pseudolog10_trans,
+  #                              labels = scales::label_comma(accuracy = 0.001,
+  #                                                           drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Ventilation Difference\nTerrestrial minus Aquatic',
+          y = 'Ventilation Difference (mL/min)',
+          x = 'Body Mass (kg)') 
+```
+
+```{r, vent-difference-log-scale}
+gf_line(boot_median_vent_diff ~ 10^log10_mass.x,
+        data = vent_diffs) |>
+  gf_ribbon(boot_vent_diff_lo + boot_vent_diff_hi ~ 10^log10_mass.x) |>
+  gf_refine(scale_x_continuous(trans='log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))) |>
+  gf_refine(scale_y_continuous(trans=pseudolog10_trans,
+                               breaks = c(-500000, -50000, -5000, -500, -50, 0, 50, 500, 5000, 50000, 500000),
+                               labels = scales::label_comma(accuracy = 0.01,
+                                                            drop0trailing = TRUE))) |>
+  gf_labs(title = 'Expected Ventilation Difference\nTerrestrial minus Aquatic',
+          y = 'Ventilation Difference (mL/min)',
+          x = 'Body Mass (kg)') 
+```

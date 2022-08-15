@@ -1,0 +1,155 @@
+name,order,family,genus,species,mass,logmb,fr,logfr,habitat,adult,fasted,resting,tnz,nonrep,sedated,Primary Source,Secondary Source (if used),Number of Animals,Notes
+,,,,,,,,,,,,,,,,,,,
+northern bottlenose whale,artiodactyla,Ziphiidae,Hyperoodon,ampullatus,6650,3.822821645,1.1,0.041392685,aquatic,y,n,y,m,m,n,"Andersen, 1966","Mortola and Limoges, 2006",1+,
+,,,,,,,,,,,,,,,,,,,
+asian elephant,proboscidea,Elephantidae,Elephas,maximus,4550,3.658011397,7,0.84509804,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,9,lying down
+,,,,,,,,,,,,,,,,,,,
+minke whale,artiodactyla,Balaenopteridae,Balaenoptera,acutorostrata,3842.5,3.584613876,0.83375,-0.078964153,aquatic,y,n,y,m,m,n,Blix and Folkow 1995,"Fahlman, Moore, and Garcia-Parrage, 2017",6,
+,,,,,,,,,,,,,,,,,,,
+rhino,perissodactyla,Rhinocerotidae,Ceratotherium,simum,3091,3.490099005,11,1.041392685,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3,standing still
+,,,,,,,,,,,,,,,,,,,
+African and asian elephant,proboscidea,Elephantidae,Elephant,species,2710,3.432969291,7.3,0.86332286,land,y,n,y,m,m,n,"Honeyman, Pettifer, and Dyson, 1992",,15,standing still
+,,,,,,,,,,,,,,,,,,,
+african elephant,proboscidea,Elephantidae,Loxodonta,africana,2611,3.416806872,5,0.698970004,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+killer whale/orca,artiodactyla,Delphinidae,Orcinus,orca,2026.2,3.306682311,1.32,0.120573931,aquatic,y,m,y,m,y,n,"Blawas et al., 2021",,5,
+,,,,,,,,,,,,,,,,,,,
+hippo,artiodactyla,Hippopotamidae,Hippopotamus,amphibius,1900,3.278753601,6,0.77815125,aquatic,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,5,
+,,,,,,,,,,,,,,,,,,,
+northern elephant seal,carnivora,Phocidae,Mirounga,angustirostris,1175,3.070037867,15.3,1.184691431,aquatic,y,n,y,m,y,n,"Le Bouef et al., 2000",,3,
+,,,,,,,,,,,,,,,,,,,
+giraffe,artiodactyla,Giraffidae,Giraffa,camelopardalis,1012,3.005180513,7,0.84509804,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3+,
+,,,,,,,,,,,,,,,,,,,
+walrus,carnivora,Odobenidae,Odobenus,rosmarus,963.679,2.983932395,3.82308,0.582413386,aquatic,y,n,y,m,m,n,"Bertelsen, Acquarone, and Born 2006",,13,
+,,,,,,,,,,,,,,,,,,,
+pilot whale,artiodactyla,Delphinidae,Globicephala,macrorhynchus,845,2.926856709,0.69,-0.161150909,aquatic,y,m,y,m,m,n,"Blawas et al., 2021",,3,
+,,,,,,,,,,,,,,,,,,,
+wild water buffalo,artiodactyla,Bovidae,Bubalus,arnee,810,2.908485019,13,1.113943352,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+beluga whale,artiodactyla,Delphinidae,Delphinapterus,leucas,628,2.797959644,2.31,0.36361198,aquatic,y,n,y,m,y,n,"Fahlmen et al., 2019",,9,
+,,,,,,,,,,,,,,,,,,,
+horse,perissodactyla,Equidae,Equus,caballus,620,2.792391689,12,1.079181246,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+common eland,artiodactyla,Bovidae,Tragelaphus,oryx,580,2.763427994,17,1.230448921,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+american bison,artiodactyla,Bovidae,Bison,bison,576,2.760422483,23,1.361727836,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+camel,artiodactyla,Camelidae,Camelus,dromedarius,550,2.740362689,13.5,1.130333768,land,y,n,y,m,m,n,Hugh Jones 1978,,1+,
+,,,,,,,,,,,,,,,,,,,
+cow,artiodactyla,Bovidae,Bos,taurus,544,2.7355989,28,1.447158031,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,4,lying down
+,,,,,,,,,,,,,,,,,,,
+false killer whale,artiodactyla,Delphinidae,Pseudorca,crassidens,525,2.720159303,3.4667,0.53991626,aquatic,y,m,y,m,m,n,"Blawas et al., 2021",,5,
+,,,,,,,,,,,,,,,,,,,
+two-humped camel,artiodactyla,Camelidae,Camelus,bactrianus,515,2.711807229,7,0.84509804,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,seated
+,,,,,,,,,,,,,,,,,,,
+polar bear,carnivora,Ursidae,Ursus,maritimus,500,2.698970004,13,1.113943352,aquatic,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,4,
+,,,,,,,,,,,,,,,,,,,
+moose,artiodactyla,Cervidae,Alces,alces,425,2.62838893,17,1.230448921,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+yak,artiodactyla,Bovidae,Bos,grunniens,395,2.596597096,30,1.477121255,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+weddell seal,carnivora,Phocidae,Leptonychotes,weddellii,373.875,2.572726426,4.75,0.67669361,aquatic,y,n,y,m,m,n,"Falke et al., 2008",,3,
+,,,,,,,,,,,,,,,,,,,
+dugon,sirenia,Dugongidae,Dugong,dugon,360,2.556302501,0.9,-0.045757491,aquatic,y,n,y,m,m,n,"Mortola and Limoges, 2006",,1+,
+,,,,,,,,,,,,,,,,,,,
+pig,artiodactyla,Suidae,Sus,scrofa,302,2.480006943,39,1.591064607,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3,lying down
+,,,,,,,,,,,,,,,,,,,
+red deer,artiodactyla,Cervidae,Cervus,elaphus,302,2.480006943,39,1.591064607,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2+,
+,,,,,,,,,,,,,,,,,,,
+burchell's zebra,perissodactyla,Equidae,Equus,quagga,278,2.444044796,15,1.176091259,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+brown grizzly bear,carnivora,Ursidae,Ursus,arctos,274,2.437750563,15,1.176091259,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+muskox,artiodactyla,Bovidae,Ovibos,moschatus,265,2.423245874,53,1.72427587,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,4,lying down
+,,,,,,,,,,,,,,,,,,,
+manatee,sirenia,Trichechidae,Trichechus,manatus,250,2.397940009,0.7,-0.15490196,aquatic,y,n,y,m,y,n,Scholander and Irving 1941,"Mortola and Limoges, 2006",3,
+,,,,,,,,,,,,,,,,,,,
+okapi,artiodactyla,Giraffidae,Okapia,johnstoni,238,2.376576957,10,1,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+onager,perissodactyla,Equidae,Equus,hemionus,235,2.371067862,23,1.361727836,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,standing still
+,,,,,,,,,,,,,,,,,,,
+pygmy hippo,artiodactyla,Hippopotamidae,Choeropsis,liberiensis,217,2.336459734,3,0.477121255,land,y,n,y,m,y,n,"Mortola and Limoges, 2006",,3,"combination of in water and on land, 25 degrees celsius"
+,,,,,,,,,,,,,,,,,,,
+gorilla,primates,Pongidae,Gorilla,gorilla,217,2.336459734,17,1.230448921,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,seated
+,,,,,,,,,,,,,,,,,,,
+donkey,perissodactyla,Equidae,Equus,africanus,205,2.311753861,23,1.361727836,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+grey seal,carnivora,Phocidae,Halichoerus,grypus,200,2.301029996,3.3,0.51851394,aquatic,y,n,y,m,m,n,"Mortola and Limoges, 2006",,2,either on land or in water
+,,,,,,,,,,,,,,,,,,,
+scimitar oryx,artiodactyla,Bovidae,Oryx,dammah,200,2.301029996,21,1.322219295,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+bottlenose dolphins,artiodactyla,Delphinidae,Tursiops,truncatus,197.67,2.295940762,4.05,0.607455023,aquatic,y,m,y,m,m,n,"Fahlman et al., 2019",,39,
+,,,,,,,,,,,,,,,,,,,
+south-african fur seal,carnivora,Phocidae,Arctocephalus,pusillus,190,2.278753601,1.3,0.113943352,aquatic,y,n,y,m,y,n,"Mortola and Limoges, 2006",,1,"resting, on land"
+,,,,,,,,,,,,,,,,,,,
+gnu,artiodactyla,Bovidae,Connochaetes,taurinus,177,2.247973266,19,1.278753601,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+pare david's deer,artiodactyla,Cervidae,Elaphurus,davidianus,171,2.23299611,25,1.397940009,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,standing still
+,,,,,,,,,,,,,,,,,,,
+southern/patagonia sea lion,carnivora,Otariidae,Otaria,bryonia,147.46,2.16867423,4.65,0.667452953,aquatic,y,n,y,m,y,n,"Fahlman and Madigan, 2016",,5,measured on land
+,,,,,,,,,,,,,,,,,,,
+lion,carnivora,Felidae,Panthera,leo,145,2.161368002,17,1.230448921,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+llama,artiodactyla,Camelidae,Lama,glama,140,2.146128036,20,1.301029996,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3+,
+,,,,,,,,,,,,,,,,,,,
+siberian tiger,carnivora,Felidae,Panthera,tigris,125,2.096910013,15,1.176091259,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+amazonian manatee,sirenia,Trichechidae,Trichechus,inunguis,100,2,0.75,-0.124938737,aquatic,y,n,y,m,m,n,"Gallivan et al., 1980","Mortola and Limoges, 2006",3,
+,,,,,,,,,,,,,,,,,,,
+antarctic fur seal,carnivora,Phocidae,Arctocephalus,gazella,100,2,4.7,0.672097858,aquatic,y,n,y,m,y,n,"Salwicka and Stonehouse, 2000",,18,
+,,,,,,,,,,,,,,,,,,,
+bighorn sheep,artiodactyla,Bovidae,Ovis,canadensis,98,1.991226076,33,1.51851394,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3,lying down
+,,,,,,,,,,,,,,,,,,,
+addax,artiodactyla,Bovidae,Addax,nasomaculatus,92,1.963787827,26,1.414973348,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+caribou,artiodactyla,Cervidae,Rangifer,tarandus,92,1.963787827,40,1.602059991,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+mountain goat,artiodactyla,Bovidae,Oreamnos,americanus,88,1.944482672,58,1.763427994,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+tibetan bear/asian black bear,carnivora,Ursidae,Ursus,thibetanus,85,1.929418926,36,1.556302501,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+California Sea Lions,carnivora,Otariidae,Zalophus,californianus,77.9,1.891537458,6.3,0.799340549,aquatic,y,n,y,m,y,n,"McDonald and Ponganis, 2014; Fahlman et al Aquat Mam 2020",,5,in water and on land
+,,,,,,,,,,,,,,,,,,,
+harbor seal,carnivora,Phocidae,Phoca,vitulina,77,1.886490725,6,0.77815125,aquatic,y,n,y,m,y,n,"Mortola and Limoges, 2006",,3,"resting, on land"
+,,,,,,,,,,,,,,,,,,,
+puma,carnivora,Felidae,Puma,concolor,77,1.886490725,38,1.579783597,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+mule deer,artiodactyla,Cervidae,Odocoileus,hemionus,72,1.857332496,11,1.041392685,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3,lying down
+,,,,,,,,,,,,,,,,,,,
+harp seal,carnivora,Phocidae,Pagophilus,groenlandicus,70,1.84509804,12,1.079181246,aquatic,y,n,y,m,y,n,"Mortola and Limoges, 2006",,2,"resting, on land"
+,,,,,,,,,,,,,,,,,,,
+human,primates,Hominidae,Homo,sapiens,70,1.84509804,15,1.176091259,land,y,n,y,m,y,n,Hugh Jones 1978,,1+,
+,,,,,,,,,,,,,,,,,,,
+alpaca,artiodactyla,Camelidae,Vicugna,pacos,68,1.832508913,15,1.176091259,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,standing still
+,,,,,,,,,,,,,,,,,,,
+dall's sheep,artiodactyla,Bovidae,Ovis,dalli,66,1.819543936,36,1.556302501,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+jaguar,carnivora,Felidae,Panthera,onca,63,1.799340549,9,0.954242509,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,2,lying down
+,,,,,,,,,,,,,,,,,,,
+capybara,rodentia,Caviidae,Hydrochoerus,hydrochaeris,53,1.72427587,33,1.51851394,land,y,n,y,m,y,n,"Mortola and Limoges, 2006",,3,
+,,,,,,,,,,,,,,,,,,,
+harbor porpoise,artiodactyla,Phocoenidae,Phocoena,phocoena,52,1.716003344,8.2,0.913813852,aquatic,y,n,n,m,n,n,"Elmegaard, McDonald, and Madsen, 2019",,2,very low activity
+,,,,,,,,,,,,,,,,,,,
+domestic sheep,artiodactyla,Bovidae,Ovis,aries,50,1.698970004,54,1.73239376,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+domestic dog,carnivora,Canidae,Canis,lupus,39,1.591064607,21,1.322219295,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,6,lying down
+,,,,,,,,,,,,,,,,,,,
+snow leopard,carnivora,Felidae,Panthera,uncia,37,1.568201724,13,1.113943352,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+blackbuck,artiodactyla,Bovidae,Antilope,cervicapra,35,1.544068044,31,1.491361694,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+mandrill,primates,Cercopithecidae,Mandrillus,sphinx,26,1.414973348,17,1.230448921,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,seated
+,,,,,,,,,,,,,,,,,,,
+beaver,rodentia,Castoridae,Castor,canadensis,22,1.342422681,33,1.51851394,aquatic,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,6,
+,,,,,,,,,,,,,,,,,,,
+domestic goat,artiodactyla,Bovidae,Capra,hircus,22,1.342422681,37,1.568201724,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,3,lying down
+,,,,,,,,,,,,,,,,,,,
+muntjac,artiodactyla,Cervidae,Muntiacus,reevesi,14,1.146128036,26,1.414973348,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,standing still
+,,,,,,,,,,,,,,,,,,,
+spotted-necked otter,carnivora,Mustelidae,Lutra,maculicollis,12,1.079181246,22,1.342422681,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,lying down
+,,,,,,,,,,,,,,,,,,,
+colobus,primates,Cercopithecidae,Colobus,guereza,12,1.079181246,15,1.176091259,land,y,n,y,m,m,n,"Mortola and Lanthier, 2005",,1,seated
+,,,,,,,,,,,,,,,,,,,
+african clawless otter,carnivora,Mustelidae,Aonyx,capensis,11,1.041392685,16,1.204119983,aquatic,y,n,y,m,y,n,"Mortola and Limoges, 2006",,2,"resting, on land"
+,,,,,,,,,,,,,,,,,,,
+river otter,carnivora,Mustelidae,Lontra,canadensis,11,1.041392685,17,1.230448921,aquatic,y,n,y,m,y,n,"Mortola and Limoges, 2006",,2,"resting, on land"

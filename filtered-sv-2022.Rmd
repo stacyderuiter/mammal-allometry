@@ -1,0 +1,185 @@
+# Mammal Stroke Volume
+## Data
+
+Predictors: body mass interacting with habitat.
+
+
+### Read in data 
+
+```{r, sv-data-in}
+mammal_sv <- read_csv("data/svdata-filter.csv",
+                       show_col_types = FALSE) |>
+  janitor::remove_empty(which = 'rows')
+```
+
+### Cleaning
+
+Rename some variables and create species name from genus and species. 
+
+```{r, sv-data-rename}
+mammal_sv <- mammal_sv |>
+  rename(mass_kg = mass,
+         log10_sv = logsv,
+         log10_mass = logmb) |>
+  rename_with(tolower) |>
+  mutate(order = str_to_title(order),
+         family = str_to_title(family),
+         genus = str_to_title(genus),
+         animal = paste(genus, species))
+```
+
+Keep only variables we will be using. And `factor()` "chr" variables.
+
+```{r, sv-data-select}
+mammal_sv <- mammal_sv |>
+  dplyr::select(order,
+                family,
+                genus,
+                species, 
+                mass_kg,
+                log10_mass,
+                log10_sv,
+                habitat,
+                animal
+         ) |>
+  mutate(across(where(is.character), factor)) |>
+  arrange(order, family, genus, species)
+```
+
+### Viz
+A few quick graphs just to make sure the data are looking as we expect (error checking).
+
+
+```{r, sv-create-plot-no-display}
+my_scatter_plot <- gf_point(log10_sv ~ log10_mass | habitat,
+         color = ~order,
+         text = ~animal,
+         # size = ~parse_number(n_animals),
+         data = mammal_sv,
+         alpha = 0.5) |>
+  gf_theme(legend.position = 'bottom',
+           legend.title = element_text(size = 8),
+           legend.text = element_text(size = 6)) |>
+  gf_theme(scale_color_viridis_d('Order')) |>
+  gf_labs(x = 'Log10(Mass (kg))',
+          y = 'Log10(SV (ml))') 
+```
+
+```{r, sv-display-static, warning = FALSE, message = FALSE}
+my_scatter_plot
+```
+
+```{r, sv-disply-interactive, warning = FALSE, message = FALSE}
+plotly::ggplotly(my_scatter_plot) |>
+  plotly::layout(legend = list(#orientation = 'h',
+                               font = list(size = 6)))
+```
+
+Notes: If we wanted to use for web or publication, we would refine. We can edit what info is shown when you hover over a data point, change color scheme, legend, etc.
+
+## Mixed-effects model 
+
+Will include nested random effects of order/family (not having enough data to resolve genus/species differences), expecting similarity of observations based on a hierarchy of phylogenetic relatedness, but not in a specified/structured way; only groupings are used, with no sense of (for example) the fact that two orders are thought to be "further" apart than any other two.
+
+```{r, sv-fit-re}
+re_model <- glmmTMB(log10_sv ~ log10_mass * habitat +
+                      (1 | order),
+                 data = mammal_sv)
+summary(re_model)
+tab_model(re_model) 
+re_anova_results <- car::Anova(re_model)
+pander(re_anova_results)
+```
+
+According to this model, the data don't provide any evidence of an association between habitat and stroke volume, after accounting for effect of mass.
+
+### Model Assessment
+
+Graphical checks below don't provide evidence of any problems with the residual normality, residual independence, constant residual variance, and linearity conditions that have to be met for this model to be appropriate for the data.
+
+```{r, sv-assess-re}
+re_ave_preds <- predict(re_model, 
+                    se.fit = TRUE,
+                    re.form = ~0)
+re_ind_preds <- predict(re_model,
+                        se.fit = TRUE,
+                        re.form = NULL)
+mammal_sv <- mammal_sv |>
+  mutate(re_resids = resid(re_model),
+         re_ind_fitted = re_ind_preds$fit,
+         re_ave_fitted = re_ave_preds$fit,
+         re_ave_lo = re_ave_preds$fit - 1.96*re_ave_preds$se.fit,
+         re_ave_hi = re_ave_preds$fit + 1.96*re_ave_preds$se.fit)
+gf_point(re_resids ~ re_ind_fitted, data = mammal_sv)
+
+# save fitted model and data
+saveRDS(mammal_sv, 'fitted-models/sv-data-filter.RDS')
+saveRDS(re_model, 'fitted-models/sv-re-model-filter.RDS')
+
+
+acf(resid(re_model))
+gf_dhistogram(~re_resids, data = mammal_sv,
+              bins = 7) |>
+  gf_fitdistr()
+```
+
+### Predictions from Model
+
+```{r, sv-predict-re}
+mammal_sv <- mammal_sv |>
+  mutate(Habitat = stringr::str_to_sentence(habitat))
+
+re_preds <- gf_point(10^log10_sv ~ 10^log10_mass,
+         color = ~Habitat,
+        text = ~animal,
+         data = mammal_sv) |> 
+  gf_line(10^re_ave_fitted ~ 10^log10_mass,
+         color = ~Habitat,
+         data = mammal_sv,
+         text = ~Habitat) |>
+  gf_ribbon(10^re_ave_lo + 10^re_ave_hi ~ 10^log10_mass,
+            color = ~Habitat, fill = ~Habitat, 
+            text = ~Habitat) |> 
+  gf_labs(x = 'Body Mass (kg)', y = 'Stroke Volume (mL/beat)') |> 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  gf_theme(scale_fill_manual(values = my_colors)) |>
+  gf_refine(scale_x_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE)),
+            scale_y_continuous(trans = 'log10',
+                               labels = scales::label_comma(accuracy = 0.001,
+                                                            drop0trailing = TRUE))
+  )
+
+# For stroke volume (Stahl 1967, using prediction equations from Stahl for cardiac output (ml/min) and heat rate(beats/min)): SV (ml/beat) = [187 * body mass(kg)^0.81]/[241 * body mass (kg) ^-0.25]
+
+pub_models <- data.frame(mass = seq(from = 9, by = 10, to = 10000)) |> # data.frame(mass = seq(from = 0.029, by = 0.1, to = 5000)) |>
+  mutate(sv_stahl = (187*mass^0.81) / (241 * mass^-0.25))
+
+re_preds <- re_preds |>
+  gf_line(sv_stahl ~ mass, data = pub_models, color = 'black',
+          text = ~'Stahl') |>
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
+```
+
+```{r, fig.cap = 'Observed and predicted stroke volume as a function of mass and habitat. Lines are model predictions, points are observed data, and shaded areas are 95% confidence intervals. Colored lines are predictions from the mixed-effects model, green for terrestrial and blue for aquatic; black solid line is based on Stahl (1967).', fig.width = 6.5, fig.height = 3.5}
+re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
+```
+
+```{r, sv-re-predictions, echo = FALSE, fig.show = 'hide', dev = 'jpeg'}
+re_preds
+```
+
+```{r, pred-vs-fitted}
+gf_point(log10_sv ~ re_ind_fitted, data = mammal_sv,
+         alpha = 0.1) |>
+  gf_labs(y = 'Observed log10(sv)',
+          x = 'Model-predicted, Order-specific log10(sv)',
+          title = 'Mixed-effects Model (RE of Order)') |>
+  gf_abline(slope = 1, intercept = 0, color = 'black', linetype = 'dashed')
+```
+
+
