@@ -127,7 +127,7 @@ ggplotly(cardiac_mass, tooltip = 'text')
 cardiac_mass
 ```
 
-```{r, cardiac-vs-mass-log-scale}
+```{r, cardiac-vs-mass-log-scale, fig.cap = 'Predicted cardiac output as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
 cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_preds,
          color = ~habitat,
          text = ~animal) |>
@@ -140,16 +140,20 @@ cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_pre
   gf_refine(scale_y_continuous(trans='log10',
                                labels = scales::label_comma(accuracy = 0.001,
                                                             drop0trailing = TRUE))) |>
-  gf_labs(title = 'Expected Cardiac Output\nfor the species modeled',
+  gf_labs(# title = 'Expected Cardiac Output\nfor the species modeled',
           y = 'Predicted Cardiac Output (mL/min)',
           x = 'Body Mass (kg)') |>
-  gf_theme(scale_color_manual(values = my_colors)) 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  # add previous result from Stahl 1967
+  # Cardiac output (ml/min) = 187*Mb^0.81
+  gf_line(187*mean_mass^0.81 ~ mean_mass, data = cardiac_preds,
+          colour = 'black')
   
 
 ggplotly(cardiac_mass_log, tooltip = 'text')
 ```
 
-```{r, cardiac-mass-log-image, fig.show = 'hide', dev = 'jpeg'}
+```{r, cardiac-mass-log-image, fig.show = 'hide', dev = 'jpeg', fig.cap = 'Predicted cardiac output as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
 cardiac_mass_log
 ```
 
@@ -276,7 +280,7 @@ ggplotly(vent_mass, tooltip = 'text')
 vent_mass
 ```
 
-```{r, vent-vs-mass-log-scale}
+```{r, vent-vs-mass-log-scale, fig.cap = 'Predicted ventilation as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
 vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
          color = ~habitat,
          text = ~animal) |>
@@ -288,14 +292,19 @@ vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
                                                            drop0trailing = TRUE)),
             scale_y_log10(labels = scales::label_comma(accuracy = 0.001,
                                                             drop0trailing = TRUE))) |>
-  gf_labs(title = 'Expected Ventilation\nfor the species modeled',
+  gf_labs(# title = 'Expected Ventilation\nfor the species modeled',
           y = 'Predicted Ventilation (mL/min)',
           x = 'Body Mass (kg)') |>
-  gf_theme(scale_color_manual(values = my_colors)) 
+  gf_theme(scale_color_manual(values = my_colors)) |>
+  # add previous result from Stahl 1967
+  # minute volume: MV (ml/min)=379*Mb^0.80 (Mb=body mass in kg)
+  gf_line(379*mean_mass^0.80 ~ mean_mass, data = cardiac_preds,
+          colour = 'black')
+  
 
 ggplotly(vent_mass_log, tooltip = 'text')
 ```
 
-```{r, vent-mass-log-image, fig.show = 'hide', dev = 'jpeg'}
+```{r, vent-mass-log-image, fig.show = 'hide', dev = 'jpeg', fig.cap = 'Predicted ventilation as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
 vent_mass_log
 ```
