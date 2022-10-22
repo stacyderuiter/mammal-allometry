@@ -161,9 +161,11 @@ pub_models <- data.frame(mass = seq(from = 9, by = 10, to = 10000)) |> # data.fr
 
 re_preds <- re_preds |>
   gf_line(vt_stahl ~ mass, data = pub_models, color = 'black',
-          text = ~'Stahl') |>
+          text = ~'Stahl',
+          alpha = 0.4) |>
   gf_line(vt_fahlman ~ mass, data = pub_models, color = 'black',
-          linetype = 'dashed', text = ~'Fahlman') |>
+          linetype = 'dashed', text = ~'Fahlman',
+          alpha = 0.4) |>
   # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
   gf_theme(legend.position = c(0.9, 0.1),
            legend.title = element_blank()) |>

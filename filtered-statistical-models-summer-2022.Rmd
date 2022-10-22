@@ -40,7 +40,8 @@ library(janitor) # to easily remove empty rows
 # source("utils/qqnormWithBounds.R") 
 # source("PGLS model/broom_gls.R")
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, 
-                      warning = FALSE, cache = TRUE,
+                      warning = FALSE, 
+                      # cache = TRUE,
                       fig.path = 'figures/',
                       fig.cap = "&nbsp;")
 theme_set(theme_minimal(base_size = 14))
