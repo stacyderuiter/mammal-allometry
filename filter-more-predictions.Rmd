@@ -295,7 +295,7 @@ vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
             scale_y_log10(labels = scales::label_comma(accuracy = 0.001,
                                                             drop0trailing = TRUE))) |>
   gf_labs(# title = 'Expected Ventilation\nfor the species modeled',
-          y = 'Predicted Ventilation (mL/min)',
+          y = 'Predicted Minute Ventilation (mL/min)',
           x = 'Body Mass (kg)') |>
   gf_theme(scale_color_manual(values = my_colors)) |>
   # add previous result from Stahl 1967

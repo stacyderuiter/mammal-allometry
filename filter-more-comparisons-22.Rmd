@@ -420,7 +420,7 @@ vent_mass_log <- gf_point(boot_median_vent ~ 10^log10_mass.x, data = vent_preds,
             scale_y_log10(labels = scales::label_comma(accuracy = 0.001,
                                                             drop0trailing = TRUE))) |>
   gf_labs(title = 'Expected Ventilation',
-          y = 'Predicted Ventilation (mL/min)',
+          y = 'Predicted Minute Ventilation (mL/min)',
           x = 'Body Mass (kg)') |>
   gf_theme(scale_color_manual(values = my_colors)) 
 
@@ -459,7 +459,7 @@ gf_line(boot_median_vent_diff ~ 10^log10_mass.x,
   # gf_refine(scale_y_continuous(trans=pseudolog10_trans,
   #                              labels = scales::label_comma(accuracy = 0.001,
   #                                                           drop0trailing = TRUE))) |>
-  gf_labs(title = 'Expected Ventilation Difference\nTerrestrial minus Aquatic',
+  gf_labs(title = 'Expected Minute Ventilation Difference\nTerrestrial minus Aquatic',
           y = 'Ventilation Difference (mL/min)',
           x = 'Body Mass (kg)') 
 ```
