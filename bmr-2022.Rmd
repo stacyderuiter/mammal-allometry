@@ -137,7 +137,8 @@ mammal_bmr <- mammal_bmr |>
 
 re_preds <- gf_point(10^log10_bmr ~ 10^log10_mass,
          color = ~Habitat, data = mammal_bmr,
-         size = 0.5, alpha = 0.4,
+         # size = 0.5, 
+         # alpha = 0.4,
          text = ~animal) |>
 gf_line(10^re_ave_fitted ~ 10^log10_mass,
          color = ~Habitat,
