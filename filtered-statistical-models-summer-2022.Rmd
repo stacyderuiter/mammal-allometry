@@ -42,9 +42,25 @@ library(janitor) # to easily remove empty rows
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, 
                       warning = FALSE, 
                       # cache = TRUE,
-                      fig.path = 'figures/',
+                      # 3 options for figures
+                      # fig.path = 'figures/grid-no-box/',
+                     # fig.path = 'figures/grid-box/',
+                       fig.path = 'figures/no-grid-box/',
                       fig.cap = "&nbsp;")
 theme_set(theme_minimal(base_size = 14))
+# for adding box with grids
+# theme_update(panel.background = element_blank(),
+#         # panel.grid.major = element_blank(), 
+#         # panel.grid.minor = element_blank(),
+#         axis.line = element_line(colour = "black"),
+#         panel.border = element_rect(colour = "black", fill=NA))
+# for box and not grids
+theme_update(panel.background = element_blank(),
+             axis.ticks = element_line(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.border = element_rect(colour = "black", fill=NA))
 my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
 # below were for PGLS
 # source('utils/gls-utils.R')
