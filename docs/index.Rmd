@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Data Files
 
-All datasets used in the analysis, as well as a [cleaned-up Excel file](https://github.com/stacyderuiter/mammal-allometry/raw/main/data/bmr_cardio_cleaned.xlsx) containing all data, are available on [the manuscript's github repository](https://github.com/stacyderuiter/mammal-allometry) in the [data directory](https://github.com/stacyderuiter/mammal-allometry/tree/main/data).
+All datasets used in the analysis, as well as a [cleaned-up Excel file](https://github.com/stacyderuiter/mammal-allometry/raw/main/data/bmr_cardio_condensed-June23-2022-use for paper.xlsx) containing all data, are available on [the manuscript's github repository](https://github.com/stacyderuiter/mammal-allometry) in the [data directory](https://github.com/stacyderuiter/mammal-allometry/tree/main/data).
 
 *Note: upon publication, citation info will be provided here too.*
 
