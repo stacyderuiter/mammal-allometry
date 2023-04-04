@@ -12,17 +12,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 All datasets used in the analysis are available on [the manuscript's github repository](https://github.com/stacyderuiter/mammal-allometry) in the [data directory](https://github.com/stacyderuiter/mammal-allometry/tree/main/data).
 
+The data directory also contains a spreadsheet indicating all species included in the analysis and the data sources used. The information from that spreadsheet is also reproduced here (but see the spreadsheet for complete citations of sources):
+
+```{r, echo = FALSE}
+readxl::read_excel('../data/species-and-sources.xlsx') |>
+  DT::datatable()
+```
+
 *Note: upon publication, citation info will be provided here too.*
 
 ## Supplemental Information
 
 Code and results for all model fitting are available in the [project github repository](https://github.com/stacyderuiter/mammal-allometry). The .Rmd files in the main directory are the R source code; you can also view a [compiled version](supplement.html) on this site.
 
-<!-- *Note: our plan is to update to a version with just one file/page with sections for each of the different response variables.* -->
-
-<!-- - [Metabolic rate models](all-models-bmr.html) -->
-<!-- - [Breathing frequency models](all-models-fr.html) -->
-<!-- - [Heart rate models](all-models-hr.html) -->
-<!-- - [Stroke volume models](all-models-sv.html) -->
-<!-- - [Tidal volume models](all-models-vt.html) -->
-<!-- - Model predictions: [Cardiac output and total ventilation](more-predictions.html) -->
