@@ -44,9 +44,10 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE,
                       # cache = TRUE,
                       # 3 options for figures
                       # fig.path = 'figures/grid-no-box/',
-                     # fig.path = 'figures/grid-box/',
-                       fig.path = 'figures/no-grid-box/',
-                      fig.cap = "&nbsp;")
+                     fig.path = 'figures/grid-box/',
+                       # fig.path = 'figures/no-grid-box/',
+                      fig.cap = "&nbsp;",
+                     dpi = 300)
 theme_set(theme_minimal(base_size = 14))
 # for adding box with grids
 # theme_update(panel.background = element_blank(),
