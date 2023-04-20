@@ -128,11 +128,14 @@ cardiac_mass
 ```
 
 ```{r, cardiac-vs-mass-log-scale, fig.cap = 'Predicted cardiac output as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
+cardiac_preds <- cardiac_preds |>
+  mutate(Habitat = str_to_title(habitat) )
+
 cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_preds,
-         color = ~habitat,
+         color = ~Habitat,
          text = ~animal) |>
   gf_errorbar(boot_lo + boot_hi ~ mean_mass, data = cardiac_preds,
-              color = ~habitat) |>
+              color = ~Habitat) |>
   gf_lims(x = c(0.001, 10000)) |>
   # add previous result from Stahl 1967
   # Cardiac output (ml/min) = 187*Mb^0.81
@@ -149,7 +152,11 @@ cardiac_mass_log <- gf_point(boot_median_cardiac ~ mean_mass, data = cardiac_pre
   gf_labs(# title = 'Expected Cardiac Output\nfor the species modeled',
           y = 'Predicted Cardiac Output (mL/min)',
           x = 'Body Mass (kg)') |>
-  gf_theme(scale_color_manual(values = my_colors)) 
+  gf_theme(scale_color_manual(values = my_colors)) |> 
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
   
 
 ggplotly(cardiac_mass_log, tooltip = 'text')
@@ -284,11 +291,14 @@ vent_mass
 ```
 
 ```{r, vent-vs-mass-log-scale, fig.cap = 'Predicted ventilation as a function of mass and habitat. Colored dots with error bars are mean values and percentile-based 95 percent confidence intervals from parametric bootstrap. Black solid line is based on Stahl (1967).'}
+vent_preds <- vent_preds |>
+  mutate(Habitat = str_to_title(habitat))
+
 vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
-         color = ~habitat,
+         color = ~Habitat,
          text = ~animal) |>
   gf_errorbar(boot_lo + boot_hi ~ mean_mass, data = vent_preds,
-              color = ~habitat)|>
+              color = ~Habitat)|>
   gf_lims(x = c(0.001, 10000)) |>
   gf_refine(scale_x_log10(#trans = 'log10',
                               labels = scales::label_comma(accuracy = 0.001,
@@ -303,7 +313,11 @@ vent_mass_log <- gf_point(boot_median_vent ~ mean_mass, data = vent_preds,
   # minute volume: MV (ml/min)=379*Mb^0.80 (Mb=body mass in kg)
   gf_line(379*mean_mass^0.80 ~ mean_mass, data = cardiac_preds,
           colour = 'black', inherit = FALSE,
-          alpha = 0.4)
+          alpha = 0.4) |> 
+  # c(0,0) corresponds to the “bottom left” and c(1,1) corresponds to the “top right” position
+  gf_theme(legend.position = c(0.9, 0.1),
+           legend.title = element_blank()) |>
+  gf_theme(plot.margin = unit(c(1,2,1,1), "cm"))
 
 ggplotly(vent_mass_log, tooltip = 'text')
 ```
