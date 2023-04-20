@@ -177,8 +177,9 @@ re_preds <- re_preds |>
 re_preds |> gf_theme(legend.position='none') |> ggplotly(tooltip = 'text')
 ```
 
-```{r, bmr-predictions-by-habitat, fig.show = 'hide', dev = 'jpeg'}
-re_preds
+```{r, figure-2a, fig.show = 'hide', dev = 'jpeg'}
+re_preds |>
+  gf_labs(tag = "A")
 ```
 
 

@@ -58,10 +58,11 @@ theme_set(theme_minimal(base_size = 14))
 # for box and not grids
 theme_update(panel.background = element_blank(),
              axis.ticks = element_line(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
-        panel.border = element_rect(colour = "black", fill=NA))
+             panel.grid.major = element_blank(),
+             panel.grid.minor = element_blank(),
+             axis.line = element_line(colour = "black"),
+             panel.border = element_rect(colour = "black", fill=NA),
+             plot.tag = element_text(face = "bold", size = 30))
 my_colors <- RColorBrewer::brewer.pal(3, "Paired")[2:3]
 # below were for PGLS
 # source('utils/gls-utils.R')
