@@ -39,3 +39,7 @@ figures/*_files/
 
 # R Environment Variables
 .Renviron
+
+# stuff to not make public
+private-files/
+data/old_files/
